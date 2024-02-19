@@ -11,10 +11,10 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinFontRenderer {
 
     @Shadow
-    protected abstract int sizeStringToWidth(String str, int wrapWidth);
+    protected abstract int indexAtWidth(String str, int wrapWidth);
 
     @Shadow
-    protected static String getFormatFromString(String p_78282_0_) {
+    protected static String isolateFormatting(String p_78282_0_) {
         throw new UnsupportedOperationException();
     }
 
@@ -25,16 +25,16 @@ public abstract class MixinFontRenderer {
      * @author eigenraven
      */
     @Overwrite
-    public String wrapFormattedStringToWidth(String str, int wrapWidth) {
+    public String insertLineBreaks(String str, int wrapWidth) {
         // Always have at least one character per line
-        final int firstLineWidth = Math.max(1, this.sizeStringToWidth(str, wrapWidth));
+        final int firstLineWidth = Math.max(1, this.indexAtWidth(str, wrapWidth));
         if (str.length() <= firstLineWidth) {
             return str;
         }
         StringBuilder output = new StringBuilder(str.length() + str.length() / firstLineWidth);
         StringBuilder formatting = new StringBuilder();
         for (;;) {
-            final int lineWidth = Math.max(1, this.sizeStringToWidth(str, wrapWidth));
+            final int lineWidth = Math.max(1, this.indexAtWidth(str, wrapWidth));
             final String line = StringUtils.substring(str, 0, lineWidth);
             output.append(line);
             if (lineWidth >= str.length()) {
@@ -42,7 +42,7 @@ public abstract class MixinFontRenderer {
             }
             output.append('\n');
             formatting.append(line);
-            String newFormat = getFormatFromString(formatting.toString());
+            String newFormat = isolateFormatting(formatting.toString());
             formatting.setLength(0);
             formatting.append(newFormat);
             output.append(formatting);

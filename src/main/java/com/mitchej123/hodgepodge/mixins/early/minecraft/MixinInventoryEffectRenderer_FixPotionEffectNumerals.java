@@ -26,10 +26,10 @@ public class MixinInventoryEffectRenderer_FixPotionEffectNumerals {
     }
 
     @Redirect(
-            method = "func_147044_g",
+            method = "drawStatusEffects",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/resources/I18n;format(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;",
+                    target = "Lnet/minecraft/client/resources/I18n;translate(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;",
                     ordinal = 1))
     private String hodgepodge$addRomanNumeral(String string, Object[] objects,
             @Share("potionAmplifierLevel") LocalIntRef potionAmplifierLevel) {
@@ -38,7 +38,7 @@ public class MixinInventoryEffectRenderer_FixPotionEffectNumerals {
                 return String.valueOf(potionAmplifierLevel.get() + 1);
             } else {
                 final String translation = I18n
-                        .format("enchantment.level." + (potionAmplifierLevel.get() + 1), objects);
+                        .translate("enchantment.level." + (potionAmplifierLevel.get() + 1), objects);
                 if (translation != null && translation.startsWith("enchantment.level.")) {
                     return RomanNumerals.toRomanLimited(potionAmplifierLevel.get() + 1, 20);
                 } else {

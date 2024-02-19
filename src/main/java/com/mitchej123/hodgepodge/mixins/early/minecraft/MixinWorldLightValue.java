@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinWorldLightValue {
 
     @Redirect(
-            method = "getBlockLightValue_do",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;getBlockLightValue(IIII)I"))
+            method = "getRawBrightness",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;getLightAt(IIII)I"))
     public int hodgepodge$getBlockLightValueNullSafe(Chunk chunk, int par1, int par2, int par3, int par4) {
-        return chunk != null ? chunk.getBlockLightValue(par1, par2, par3, par4) : 0;
+        return chunk != null ? chunk.getLightAt(par1, par2, par3, par4) : 0;
     }
 }

@@ -1,6 +1,6 @@
 package com.mitchej123.hodgepodge.mixins.late.witchery;
 
-import static net.minecraft.client.entity.AbstractClientPlayer.getDownloadImageSkin;
+import static net.minecraft.client.entity.AbstractClientPlayer.loadTexture;
 
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.util.ResourceLocation;
@@ -21,6 +21,6 @@ public class MixinEntityReflection {
                     target = "Lcom/emoniph/witchery/entity/EntityReflection;getDownloadImageSkin(Lnet/minecraft/util/ResourceLocation;Ljava/lang/String;)Lnet/minecraft/client/renderer/ThreadDownloadImageData;"),
             remap = false)
     private ThreadDownloadImageData hodgepodge$getDownloadImageSkin(ResourceLocation location, String name) {
-        return getDownloadImageSkin(location, name);
+        return loadTexture(location, name);
     }
 }

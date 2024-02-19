@@ -17,33 +17,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinRenderGlobal_FixWordLeak {
 
     @Shadow
-    public List tileEntities;
+    public List globalBlockEntities;
 
     @Shadow
-    private WorldRenderer[] worldRenderers;
+    private WorldRenderer[] chunkStorage;
 
     @Shadow
-    private WorldRenderer[] sortedWorldRenderers;
+    private WorldRenderer[] compiledChunks;
 
     @Inject(
-            method = "setWorldAndLoadRenderers(Lnet/minecraft/client/multiplayer/WorldClient;)V",
+            method = "setWorld(Lnet/minecraft/client/multiplayer/WorldClient;)V",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/renderer/RenderGlobal;theWorld:Lnet/minecraft/client/multiplayer/WorldClient;",
+                    target = "Lnet/minecraft/client/renderer/RenderGlobal;world:Lnet/minecraft/client/multiplayer/WorldClient;",
                     opcode = Opcodes.PUTFIELD,
                     shift = At.Shift.AFTER))
     public void hodgepodge$clearWorldRenderersAndTileEntities(WorldClient worldClient, CallbackInfo ci) {
         if (worldClient == null) {
-            tileEntities.clear();
+            globalBlockEntities.clear();
 
-            if (worldRenderers != null) {
-                for (WorldRenderer worldRenderer : worldRenderers) {
-                    worldRenderer.stopRendering();
+            if (chunkStorage != null) {
+                for (WorldRenderer worldRenderer : chunkStorage) {
+                    worldRenderer.releaseBuffers();
                 }
             }
 
-            worldRenderers = null;
-            sortedWorldRenderers = null;
+            chunkStorage = null;
+            compiledChunks = null;
         }
     }
 }

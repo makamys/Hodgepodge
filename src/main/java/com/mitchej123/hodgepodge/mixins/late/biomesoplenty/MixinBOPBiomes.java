@@ -40,11 +40,11 @@ public class MixinBOPBiomes {
                 BiomeGenBase biomeToOverride = field.getValue(null);
                 if (biomeToOverride != null) {
                     BiomeGenBase newBiome = BOPBiomeManager
-                            .createBiome(biomeClass, biomeToOverride.biomeName, biomeToOverride.biomeID);
+                            .createBiome(biomeClass, biomeToOverride.name, biomeToOverride.id);
                     if (BOPConfigurationBiomeGen.config
-                            .get("Vanilla Biomes To Override", biomeToOverride.biomeName, true).getBoolean(false)) {
+                            .get("Vanilla Biomes To Override", biomeToOverride.name, true).getBoolean(false)) {
                         field.setValue(null, newBiome);
-                        BiomeGenBase.getBiomeGenArray()[biomeToOverride.biomeID] = newBiome;
+                        BiomeGenBase.getAll()[biomeToOverride.id] = newBiome;
                     }
                 }
             } catch (Exception e) {

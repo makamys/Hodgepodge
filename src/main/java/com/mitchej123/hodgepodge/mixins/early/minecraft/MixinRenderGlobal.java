@@ -37,12 +37,12 @@ public class MixinRenderGlobal {
             slice = @Slice(
                     from = @At(
                             value = "INVOKE_STRING",
-                            target = "Lnet/minecraft/profiler/Profiler;endStartSection(Ljava/lang/String;)V",
+                            target = "Lnet/minecraft/profiler/Profiler;swap(Ljava/lang/String;)V",
                             args = "ldc=blockentities")),
             at = @At(
                     value = "INVOKE",
                     ordinal = 0,
-                    target = "Lnet/minecraft/client/renderer/RenderHelper;enableStandardItemLighting()V",
+                    target = "Lnet/minecraft/client/renderer/RenderHelper;turnOn()V",
                     shift = At.Shift.AFTER,
                     by = 1))
     public void hodgepodge$prepareTESR(EntityLivingBase p_147589_1_, ICamera p_147589_2_, float p_147589_3_,
@@ -56,7 +56,7 @@ public class MixinRenderGlobal {
             method = "renderEntities",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher;renderTileEntity(Lnet/minecraft/tileentity/TileEntity;F)V"))
+                    target = "Lnet/minecraft/client/renderer/tileentity/TileEntityRendererDispatcher;render(Lnet/minecraft/tileentity/TileEntity;F)V"))
     public void hodgepodge$postTESR(TileEntityRendererDispatcher instance, TileEntity j, float k) {
         ManagedEnum<RenderDebugMode> renderDebugMode = HodgepodgeClient.renderDebugMode;
         if (!renderDebugMode.is(RenderDebugMode.OFF))
@@ -64,28 +64,28 @@ public class MixinRenderGlobal {
             GL11.glPushAttrib(
                     GL11.GL_ENABLE_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_COLOR_BUFFER_BIT | GL11.GL_LIGHTING_BIT);
 
-        instance.renderTileEntity(j, k);
+        instance.render(j, k);
 
         if (!renderDebugMode.is(RenderDebugMode.OFF)) {
 
             if (!knownIssues.contains(j) && !RenderDebugHelper.checkGLStates()) {
                 knownIssues.add(j);
-                Minecraft.getMinecraft().thePlayer.addChatMessage(
+                Minecraft.getInstance().player.sendMessage(
                         new ChatComponentText(
                                 "TileEntity (" + j.getClass().getName()
                                         + " at "
-                                        + j.xCoord
+                                        + j.x
                                         + ", "
-                                        + j.yCoord
+                                        + j.y
                                         + ", "
-                                        + j.zCoord
+                                        + j.z
                                         + ") is messing up render states!"));
                 RenderDebugHelper.log.error(
                         "TileEntity {} at ({}, {}, {}) alter render state after TESR call: {}",
                         j.getClass(),
-                        j.xCoord,
-                        j.yCoord,
-                        j.zCoord,
+                        j.x,
+                        j.y,
+                        j.z,
                         RenderDebugHelper.compose());
             }
 

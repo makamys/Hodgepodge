@@ -21,62 +21,62 @@ import com.mitchej123.hodgepodge.config.TweaksConfig;
 public class MixinMinecraft_FastBlockPlacing {
 
     @Shadow
-    private int rightClickDelayTimer;
+    private int itemUseDelay;
     @Shadow
-    public MovingObjectPosition objectMouseOver;
+    public MovingObjectPosition crosshairTarget;
     @Shadow
-    public EntityClientPlayerMP thePlayer;
+    public EntityClientPlayerMP player;
     @Shadow
-    public GameSettings gameSettings;
+    public GameSettings options;
 
     private Vec3 lastPosition;
     private ForgeDirection lastSide;
 
     @Inject(
-            method = "runTick",
+            method = "tick",
             at = @At(
                     value = "INVOKE",
                     target = "Lcpw/mods/fml/common/FMLCommonHandler;onPreClientTick()V",
                     shift = At.Shift.AFTER))
     private void hodgepodge$func_147121_ag(CallbackInfo ci) {
         if (!TweaksConfig.fastBlockPlacing) return;
-        if (thePlayer == null || thePlayer.isUsingItem()) return;
-        if (objectMouseOver == null) return;
-        if (objectMouseOver.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) return;
+        if (player == null || player.isUsingItem()) return;
+        if (crosshairTarget == null) return;
+        if (crosshairTarget.type != MovingObjectPosition.MovingObjectType.BLOCK) return;
 
-        ItemStack itemstack = this.thePlayer.inventory.getCurrentItem();
+        ItemStack itemstack = this.player.inventory.getMainHandStack();
 
         if (itemstack == null) return;
         if (!(itemstack.getItem() instanceof ItemBlock)) return;
 
-        Vec3 pos = createVec3(objectMouseOver);
-        if (rightClickDelayTimer > 0 && !isPosEqual(pos, lastPosition)
+        Vec3 pos = createVec3(crosshairTarget);
+        if (itemUseDelay > 0 && !isPosEqual(pos, lastPosition)
                 && (lastPosition == null || !isPosEqual(pos, getNewPosition(lastPosition, lastSide)))) {
-            rightClickDelayTimer = 0;
-        } else if (rightClickDelayTimer == 0 && isPosEqual(pos, lastPosition)
-                && lastSide.equals(ForgeDirection.getOrientation(objectMouseOver.sideHit))) {
-                    rightClickDelayTimer = 4;
+            itemUseDelay = 0;
+        } else if (itemUseDelay == 0 && isPosEqual(pos, lastPosition)
+                && lastSide.equals(ForgeDirection.getOrientation(crosshairTarget.face))) {
+                    itemUseDelay = 4;
                 }
 
         lastPosition = pos;
-        lastSide = ForgeDirection.getOrientation(objectMouseOver.sideHit);
+        lastSide = ForgeDirection.getOrientation(crosshairTarget.face);
     }
 
     private Vec3 createVec3(MovingObjectPosition pos) {
-        return Vec3.createVectorHelper(pos.blockX, pos.blockY, pos.blockZ);
+        return Vec3.of(pos.x, pos.y, pos.z);
     }
 
     private boolean isPosEqual(Vec3 p1, Vec3 p2) {
         if (p1 == null || p2 == null) {
             return false;
         }
-        return p1.xCoord == p2.xCoord && p1.yCoord == p2.yCoord && p1.zCoord == p2.zCoord;
+        return p1.x == p2.x && p1.y == p2.y && p1.z == p2.z;
     }
 
     private Vec3 getNewPosition(Vec3 pos, ForgeDirection direction) {
-        return Vec3.createVectorHelper(
-                pos.xCoord + direction.offsetX,
-                pos.yCoord + direction.offsetY,
-                pos.zCoord + direction.offsetZ);
+        return Vec3.of(
+                pos.x + direction.offsetX,
+                pos.y + direction.offsetY,
+                pos.z + direction.offsetZ);
     }
 }

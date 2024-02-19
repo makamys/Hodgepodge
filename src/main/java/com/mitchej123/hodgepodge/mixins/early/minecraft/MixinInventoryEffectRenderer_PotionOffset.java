@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class MixinInventoryEffectRenderer_PotionOffset extends GuiContainer {
 
     @Redirect(
-            method = "initGui",
+            method = "init",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/renderer/InventoryEffectRenderer;guiLeft:I",
+                    target = "Lnet/minecraft/client/renderer/InventoryEffectRenderer;x:I",
                     opcode = Opcodes.PUTFIELD))
     public void hodgepodge$fixPotionOffset(InventoryEffectRenderer instance, int value) {
-        this.guiLeft = (this.width - this.xSize) / 2;
+        this.x = (this.width - this.backgroundWidth) / 2;
     }
 
     /* Forced to have constructor matching super */

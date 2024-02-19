@@ -17,7 +17,7 @@ public class MixinBlockPamFruit extends Block {
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z) {
+    public AxisAlignedBB getCollisionShape(World worldIn, int x, int y, int z) {
         return null;
     }
 }

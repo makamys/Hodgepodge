@@ -21,8 +21,8 @@ public class MixinItemGolemBell {
     @Inject(method = "getMarkers", at = @At(value = "TAIL"), remap = false, cancellable = true)
     private static void hodgepodge$getMarkers(ItemStack stack, CallbackInfoReturnable<ArrayList<Marker>> cir) {
         ArrayList<Marker> markers = cir.getReturnValue();
-        if (stack.hasTagCompound()) {
-            NBTTagList nbtTagList = stack.stackTagCompound.getTagList("markers", 10);
+        if (stack.hasNbt()) {
+            NBTTagList nbtTagList = stack.nbt.getList("markers", 10);
             cir.setReturnValue(ThaumcraftMixinMethods.overwriteMarkersDimID(nbtTagList, markers));
         }
     }

@@ -23,7 +23,7 @@ public class HodgepodgeEventHandler {
 
     @SubscribeEvent
     public void onZombieAidSummon(ZombieEvent.SummonAidEvent event) {
-        if (!event.world.isRemote && xuDisableAidTrigger) {
+        if (!event.world.isMultiplayer && xuDisableAidTrigger) {
             event.setResult(Event.Result.DENY);
         }
     }

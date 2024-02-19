@@ -20,10 +20,10 @@ import com.mitchej123.hodgepodge.textures.AnimationsRenderUtils;
 public class MixinRenderBlocks {
 
     @Shadow
-    public IBlockAccess blockAccess;
+    public IBlockAccess world;
 
     @Shadow
-    public IIcon overrideBlockTexture;
+    public IIcon sprite;
 
     /**
      * @author laetansky Here where things get very tricky. We can't just mark blocks textures for update because this
@@ -36,27 +36,27 @@ public class MixinRenderBlocks {
     @Inject(method = "*(Lnet/minecraft/block/Block;DDDLnet/minecraft/util/IIcon;)V", at = @At("HEAD"))
     public void hodgepodge$beforeRenderFace(Block p_147761_1_, double p_147761_2_, double p_147761_4_,
             double p_147761_6_, IIcon icon, CallbackInfo ci) {
-        if (overrideBlockTexture != null) {
-            icon = overrideBlockTexture;
+        if (sprite != null) {
+            icon = sprite;
         }
 
-        AnimationsRenderUtils.markBlockTextureForUpdate(icon, blockAccess);
+        AnimationsRenderUtils.markBlockTextureForUpdate(icon, world);
     }
 
-    @Inject(method = "renderBlockFire", at = @At("HEAD"))
+    @Inject(method = "tessellateFire", at = @At("HEAD"))
     public void hodgepodge$markFireBlockAnimationForUpdate(BlockFire instance, int x, int y, int z,
             CallbackInfoReturnable<Boolean> cir) {
-        AnimationsRenderUtils.markBlockTextureForUpdate(instance.getFireIcon(0), blockAccess);
-        AnimationsRenderUtils.markBlockTextureForUpdate(instance.getFireIcon(1), blockAccess);
+        AnimationsRenderUtils.markBlockTextureForUpdate(instance.get(0), world);
+        AnimationsRenderUtils.markBlockTextureForUpdate(instance.get(1), world);
     }
 
     @ModifyVariable(
-            method = "renderBlockLiquid",
+            method = "tessellateLiquid",
             at = @At(
                     value = "INVOKE_ASSIGN",
-                    target = "Lnet/minecraft/client/renderer/RenderBlocks;getBlockIconFromSideAndMetadata(Lnet/minecraft/block/Block;II)Lnet/minecraft/util/IIcon;"))
+                    target = "Lnet/minecraft/client/renderer/RenderBlocks;getSprite(Lnet/minecraft/block/Block;II)Lnet/minecraft/util/IIcon;"))
     public IIcon hodgepodge$markFluidAnimationForUpdate(IIcon icon) {
-        AnimationsRenderUtils.markBlockTextureForUpdate(icon, blockAccess);
+        AnimationsRenderUtils.markBlockTextureForUpdate(icon, world);
 
         return icon;
     }

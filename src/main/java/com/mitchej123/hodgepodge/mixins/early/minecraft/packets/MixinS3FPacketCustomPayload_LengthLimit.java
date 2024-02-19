@@ -34,7 +34,7 @@ public abstract class MixinS3FPacketCustomPayload_LengthLimit extends Packet {
     }
 
     @Redirect(
-            method = "readPacketData(Lnet/minecraft/network/PacketBuffer;)V",
+            method = "read(Lnet/minecraft/network/PacketBuffer;)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lcpw/mods/fml/common/network/ByteBufUtils;readVarShort(Lio/netty/buffer/ByteBuf;)I"),
@@ -44,7 +44,7 @@ public abstract class MixinS3FPacketCustomPayload_LengthLimit extends Packet {
     }
 
     @Redirect(
-            method = "writePacketData(Lnet/minecraft/network/PacketBuffer;)V",
+            method = "write(Lnet/minecraft/network/PacketBuffer;)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lcpw/mods/fml/common/network/ByteBufUtils;writeVarShort(Lio/netty/buffer/ByteBuf;I)V"),

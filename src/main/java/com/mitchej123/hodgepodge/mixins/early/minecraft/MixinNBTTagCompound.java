@@ -21,10 +21,10 @@ import com.mitchej123.hodgepodge.util.NBTTagCompoundConcurrentModificationExcept
 public abstract class MixinNBTTagCompound {
 
     @Shadow
-    protected static void func_150298_a(String name, NBTBase data, DataOutput output) throws IOException {}
+    protected static void writeElement(String name, NBTBase data, DataOutput output) throws IOException {}
 
     @Shadow
-    public abstract NBTBase getTag(String key);
+    public abstract NBTBase get(String key);
 
     @Redirect(method = "write", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;next()Ljava/lang/Object;"))
     private Object hodgepodge$checkCME(Iterator<?> instance) {
@@ -44,14 +44,14 @@ public abstract class MixinNBTTagCompound {
             method = "write",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/nbt/NBTTagCompound;func_150298_a(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;Ljava/io/DataOutput;)V"))
+                    target = "Lnet/minecraft/nbt/NBTTagCompound;writeElement(Ljava/lang/String;Lnet/minecraft/nbt/NBTBase;Ljava/io/DataOutput;)V"))
     private void hodgepodge$appendKeyPath(String name, NBTBase data, DataOutput output) throws IOException {
         if ("File IO Thread".equals(Thread.currentThread().getName())) {
             // only do this on chunk save thread
             try {
-                func_150298_a(name, data, output);
+                writeElement(name, data, output);
             } catch (NBTTagCompoundConcurrentModificationException ex) {
-                String prefix = Stream.of("id", "mID", "x", "y", "z").map(s -> s + "=" + this.getTag(s))
+                String prefix = Stream.of("id", "mID", "x", "y", "z").map(s -> s + "=" + this.get(s))
                         .collect(Collectors.joining(",", "[", "]"));
                 if (prefix.length() > 2) { // len(prefix + suffix) == 2
                     ex.addKeyPath(String.format("[%s]%s", prefix, name));
@@ -62,7 +62,7 @@ public abstract class MixinNBTTagCompound {
                 throw ex;
             }
         } else {
-            func_150298_a(name, data, output);
+            writeElement(name, data, output);
         }
     }
 }

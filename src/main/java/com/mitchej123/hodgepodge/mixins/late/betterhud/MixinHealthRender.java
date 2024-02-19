@@ -26,7 +26,7 @@ public abstract class MixinHealthRender {
             at = @At(
                     shift = At.Shift.BEFORE,
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/texture/TextureManager;bindTexture(Lnet/minecraft/util/ResourceLocation;)V"),
+                    target = "Lnet/minecraft/client/renderer/texture/TextureManager;bind(Lnet/minecraft/util/ResourceLocation;)V"),
             cancellable = true)
     private void onlyRenderReasonableHP(EntityLivingBase entity, Minecraft mc, float partialTicks, CallbackInfo ci) {
         if (entity.getMaxHealth() > FixesConfig.betterHUDHPRenderLimit) {

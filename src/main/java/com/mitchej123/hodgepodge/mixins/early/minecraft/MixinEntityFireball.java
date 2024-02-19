@@ -24,22 +24,22 @@ public abstract class MixinEntityFireball extends Entity {
     @Shadow
     public double accelerationZ;
 
-    @Inject(method = "writeEntityToNBT", at = @At("TAIL"))
+    @Inject(method = "writeCustomNbt", at = @At("TAIL"))
     public void hodgepodge$writeFireballAcceleration(NBTTagCompound tagCompound, CallbackInfo ci) {
-        tagCompound.setTag(
+        tagCompound.put(
                 "acceleration",
-                this.newDoubleNBTList(this.accelerationX, this.accelerationY, this.accelerationZ));
+                this.toNbtList(this.accelerationX, this.accelerationY, this.accelerationZ));
     }
 
-    @Inject(method = "readEntityFromNBT", at = @At(value = "TAIL"))
+    @Inject(method = "readCustomNbt", at = @At(value = "TAIL"))
     public void hodgepodge$readFireballAcceleration(NBTTagCompound tagCompund, CallbackInfo ci) {
-        if (tagCompund.hasKey("acceleration", 9)) {
-            NBTTagList nbttaglist = tagCompund.getTagList("acceleration", 6);
-            this.accelerationX = nbttaglist.func_150309_d(0);
-            this.accelerationY = nbttaglist.func_150309_d(1);
-            this.accelerationZ = nbttaglist.func_150309_d(2);
+        if (tagCompund.contains("acceleration", 9)) {
+            NBTTagList nbttaglist = tagCompund.getList("acceleration", 6);
+            this.accelerationX = nbttaglist.getDouble(0);
+            this.accelerationY = nbttaglist.getDouble(1);
+            this.accelerationZ = nbttaglist.getDouble(2);
         } else {
-            this.setDead();
+            this.remove();
         }
     }
 

@@ -23,9 +23,9 @@ public class MixinKeyBinding implements KeyBindingExt {
 
     @Shadow
     @Final
-    private static List<KeyBinding> keybindArray;
+    private static List<KeyBinding> ALL;
     @Shadow
-    private int pressTime;
+    private int clickCount;
     @Shadow
     private boolean pressed;
     @Unique
@@ -36,11 +36,11 @@ public class MixinKeyBinding implements KeyBindingExt {
      * @reason Needed to replace a hashmap lookup with multimap iteration
      */
     @Overwrite
-    public static void onTick(int keyCode) {
+    public static void click(int keyCode) {
         if (keyCode != 0) {
             for (KeyBinding bind : hodgepodge$keybindMultiMap.get(keyCode)) {
                 if (bind != null) {
-                    ++((MixinKeyBinding) (Object) bind).pressTime;
+                    ++((MixinKeyBinding) (Object) bind).clickCount;
                 }
             }
         }
@@ -51,7 +51,7 @@ public class MixinKeyBinding implements KeyBindingExt {
      * @reason Needed to replace a hashmap lookup with multimap iteration
      */
     @Overwrite
-    public static void setKeyBindState(int keyCode, boolean pressed) {
+    public static void set(int keyCode, boolean pressed) {
         if (keyCode != 0) {
             for (KeyBinding bind : hodgepodge$keybindMultiMap.get(keyCode)) {
                 if (bind != null) {
@@ -67,7 +67,7 @@ public class MixinKeyBinding implements KeyBindingExt {
             require = 1)
     private static void hodgepodge$populateKeybindMatcherArray(CallbackInfo ci) {
         hodgepodge$keybindMultiMap.clear();
-        for (KeyBinding binding : (List<KeyBinding>) keybindArray) {
+        for (KeyBinding binding : (List<KeyBinding>) ALL) {
             if (binding != null && binding.getKeyCode() != 0) {
                 hodgepodge$keybindMultiMap.put(binding.getKeyCode(), binding);
             }
@@ -87,7 +87,7 @@ public class MixinKeyBinding implements KeyBindingExt {
         for (KeyBinding keyBinding : hodgepodge$keybindMultiMap.values()) {
             try {
                 final int keyCode = keyBinding.getKeyCode();
-                KeyBinding.setKeyBindState(keyCode, keyCode < 256 && Keyboard.isKeyDown(keyCode));
+                KeyBinding.set(keyCode, keyCode < 256 && Keyboard.isKeyDown(keyCode));
             } catch (IndexOutOfBoundsException ignored) {}
         }
     }

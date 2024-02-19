@@ -14,10 +14,10 @@ import com.mitchej123.hodgepodge.client.ClientTicker;
 public class MinecraftMixin {
 
     @Redirect(
-            method = "displayDebugInfo",
+            method = "renderProfilerChart",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/FontRenderer;drawStringWithShadow(Ljava/lang/String;III)I",
+                    target = "Lnet/minecraft/client/gui/FontRenderer;drawWithShadow(Ljava/lang/String;III)I",
                     ordinal = 0),
             slice = @Slice(from = @At(value = "CONSTANT", args = { "stringValue=[?] " })))
     public int hodgepodge$drawLongString(FontRenderer fontRenderer, String text, int x, int y, int color) {
@@ -31,6 +31,6 @@ public class MinecraftMixin {
             text = text.substring(0, 43);
         }
 
-        return fontRenderer.drawStringWithShadow(text, x, y, color);
+        return fontRenderer.drawWithShadow(text, x, y, color);
     }
 }

@@ -20,7 +20,7 @@ public class MixinBlockNetherLeaves extends BlockLeavesBase {
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess worldIn, int x, int y, int z, int side) {
+    public boolean shouldRenderFace(IBlockAccess worldIn, int x, int y, int z, int side) {
         return !Minecraft.isFancyGraphicsEnabled() && worldIn.getBlock(x, y, z) == this ? false
                 : (side == 0 && this.minY > 0.0D ? true
                         : (side == 1 && this.maxY < 1.0D ? true

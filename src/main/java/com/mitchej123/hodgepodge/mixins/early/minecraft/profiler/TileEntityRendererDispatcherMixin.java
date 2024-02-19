@@ -13,30 +13,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TileEntityRendererDispatcherMixin {
 
     @Inject(
-            method = "renderTileEntityAt",
+            method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/tileentity/TileEntitySpecialRenderer;renderTileEntityAt(Lnet/minecraft/tileentity/TileEntity;DDDF)V"))
+                    target = "Lnet/minecraft/client/renderer/tileentity/TileEntitySpecialRenderer;render(Lnet/minecraft/tileentity/TileEntity;DDDF)V"))
     public void hodgepodge$startProfiler(TileEntity te, double x, double y, double z, float partialTicks,
             CallbackInfo ci) {
-        if (Minecraft.getMinecraft().mcProfiler.profilingEnabled) {
-            String name = me().getSpecialRenderer(te).getClass().getName().replace(".", "/"); // replacing due to
+        if (Minecraft.getInstance().profiler.isProfiling) {
+            String name = me().getRenderer(te).getClass().getName().replace(".", "/"); // replacing due to
                                                                                               // specific logic inside
                                                                                               // profiler based on dots
-            Minecraft.getMinecraft().mcProfiler.startSection(name);
+            Minecraft.getInstance().profiler.push(name);
         }
     }
 
     @Inject(
-            method = "renderTileEntityAt",
+            method = "render",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/tileentity/TileEntitySpecialRenderer;renderTileEntityAt(Lnet/minecraft/tileentity/TileEntity;DDDF)V",
+                    target = "Lnet/minecraft/client/renderer/tileentity/TileEntitySpecialRenderer;render(Lnet/minecraft/tileentity/TileEntity;DDDF)V",
                     shift = At.Shift.AFTER))
     public void hodgepodge$endProfiler(TileEntity te, double x, double y, double z, float partialTicks,
             CallbackInfo ci) {
-        if (Minecraft.getMinecraft().mcProfiler.profilingEnabled) {
-            Minecraft.getMinecraft().mcProfiler.endSection();
+        if (Minecraft.getInstance().profiler.isProfiling) {
+            Minecraft.getInstance().profiler.pop();
         }
     }
 

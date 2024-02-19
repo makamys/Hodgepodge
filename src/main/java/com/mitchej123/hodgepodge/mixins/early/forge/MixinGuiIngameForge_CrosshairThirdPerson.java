@@ -14,7 +14,7 @@ public class MixinGuiIngameForge_CrosshairThirdPerson extends GuiIngame {
 
     @Inject(method = "renderCrosshairs", at = @At("HEAD"), cancellable = true, remap = false)
     public void hodgepodge$hideCrosshairThirdPerson(int width, int height, CallbackInfo ci) {
-        if (mc.gameSettings.thirdPersonView != 0) {
+        if (minecraft.options.perspective != 0) {
             ci.cancel();
         }
     }

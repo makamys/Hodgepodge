@@ -10,7 +10,7 @@ import micdoodle8.mods.galacticraft.core.client.gui.container.GuiExtendedInvento
 public class MixinGuiExtendedInventory {
 
     @Redirect(
-            method = "initGui",
+            method = "init",
             at = @At(
                     value = "INVOKE",
                     target = "Lmicdoodle8/mods/galacticraft/core/client/gui/container/GuiExtendedInventory;getPotionOffset()I",
@@ -20,7 +20,7 @@ public class MixinGuiExtendedInventory {
     }
 
     @Redirect(
-            method = "initGui",
+            method = "init",
             at = @At(
                     value = "INVOKE",
                     target = "Lmicdoodle8/mods/galacticraft/core/client/gui/container/GuiExtendedInventory;getPotionOffsetNEI()I",

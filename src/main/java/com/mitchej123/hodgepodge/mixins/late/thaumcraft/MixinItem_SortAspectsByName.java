@@ -27,7 +27,7 @@ public class MixinItem_SortAspectsByName {
                     remap = false,
                     target = "Lthaumcraft/api/aspects/AspectList;getAspectsSorted()[Lthaumcraft/api/aspects/Aspect;",
                     value = "INVOKE"),
-            method = "addInformation")
+            method = "addHoverText")
     private Aspect[] hodgepodge$getAspectsSortedName(AspectList instance) {
         return AspectNameSorter.sort(instance);
     }

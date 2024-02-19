@@ -14,7 +14,7 @@ import com.mitchej123.hodgepodge.Compat;
 public abstract class MixinInventoryEffectRenderer_PotionEffectRendering extends GuiContainer {
 
     @Shadow
-    private void func_147044_g() {}
+    private void drawStatusEffects() {}
 
     /**
      * @author Alexdoru
@@ -22,18 +22,18 @@ public abstract class MixinInventoryEffectRenderer_PotionEffectRendering extends
      *         doesn't render the potion effects that you get while your inventory is opened
      */
     @Overwrite
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         boolean leftPanelHidden = !Compat.isNeiLeftPanelVisible();
         if (leftPanelHidden) {
-            super.drawScreen(mouseX, mouseY, partialTicks);
+            super.render(mouseX, mouseY, partialTicks);
         }
-        if (!this.mc.thePlayer.getActivePotionEffects().isEmpty()) {
-            this.func_147044_g();
+        if (!this.minecraft.player.getStatusEffects().isEmpty()) {
+            this.drawStatusEffects();
         }
         if (leftPanelHidden) {
             return;
         }
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     /* Forced to have constructor matching super */

@@ -16,26 +16,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinMinecraft_ClearRenderersWorldLeak {
 
     @Shadow
-    public EffectRenderer effectRenderer;
+    public EffectRenderer particleManager;
 
     @Shadow
-    public RenderGlobal renderGlobal;
+    public RenderGlobal worldRenderer;
 
     @Inject(
-            method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V",
+            method = "setWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/Minecraft;theWorld:Lnet/minecraft/client/multiplayer/WorldClient;",
+                    target = "Lnet/minecraft/client/Minecraft;world:Lnet/minecraft/client/multiplayer/WorldClient;",
                     opcode = Opcodes.PUTFIELD,
                     shift = At.Shift.AFTER))
     private void hodgepodge$fixRenderersWorldLeak(WorldClient worldClient, String loadingMessage, CallbackInfo ci) {
         if (worldClient == null) {
-            if (renderGlobal != null) {
-                renderGlobal.setWorldAndLoadRenderers(null);
+            if (worldRenderer != null) {
+                worldRenderer.setWorld(null);
             }
 
-            if (effectRenderer != null) {
-                effectRenderer.clearEffects(null);
+            if (particleManager != null) {
+                particleManager.setWorld(null);
             }
         }
     }

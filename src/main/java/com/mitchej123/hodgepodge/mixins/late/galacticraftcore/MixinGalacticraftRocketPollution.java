@@ -23,9 +23,9 @@ public abstract class MixinGalacticraftRocketPollution extends EntityAutoRocket 
         super(world);
     }
 
-    @Inject(method = "onUpdate", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("HEAD"))
     private void hodgepodge$addRocketPollution(CallbackInfo ci) {
-        if (this.worldObj.isRemote || !(launchPhase == EnumLaunchPhase.LAUNCHED.ordinal()
+        if (this.world.isMultiplayer || !(launchPhase == EnumLaunchPhase.LAUNCHED.ordinal()
                 || launchPhase == EnumLaunchPhase.IGNITED.ordinal()))
             return;
 
@@ -35,6 +35,6 @@ public abstract class MixinGalacticraftRocketPollution extends EntityAutoRocket 
         else if (launchPhase == EnumLaunchPhase.IGNITED.ordinal())
             pollutionAmount = PollutionHelper.rocketIgnitionPollutionAmount(this.getRocketTier());
 
-        PollutionHelper.addPollution(worldObj.getChunkFromBlockCoords((int) posX, (int) posZ), pollutionAmount);
+        PollutionHelper.addPollution(world.getChunk((int) x, (int) z), pollutionAmount);
     }
 }

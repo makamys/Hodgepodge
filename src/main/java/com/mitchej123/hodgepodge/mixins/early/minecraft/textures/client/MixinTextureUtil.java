@@ -16,7 +16,7 @@ public class MixinTextureUtil {
      * @reason Don't divide by zero for small textures.
      */
     @Overwrite
-    public static int[][] generateMipmapData(int levels, int size, int[][] texture) {
+    public static int[][] generateMipmaps(int levels, int size, int[][] texture) {
         int[][] mipmaps = new int[levels + 1][];
         mipmaps[0] = texture[0];
 
@@ -50,7 +50,7 @@ public class MixinTextureUtil {
                     for (int x = 0; x < width; ++x) {
                         for (int y = 0; y < height; ++y) {
                             int prevPos = 2 * (x + y * prevWidth);
-                            mipmap[x + y * width] = func_147943_a(
+                            mipmap[x + y * width] = blendPixels(
                                     prevLevel[prevPos],
                                     prevLevel[prevPos + 1],
                                     prevLevel[prevPos + prevWidth],
@@ -72,7 +72,7 @@ public class MixinTextureUtil {
      * @reason Rewrite mipmap color math to use memoized value array instead of using Math.pow directly
      */
     @Overwrite
-    private static int func_147943_a(int one, int two, int three, int four, boolean alpha) {
+    private static int blendPixels(int one, int two, int three, int four, boolean alpha) {
         if (!alpha) {
             int a = Mipmaps.getColorComponent(one, two, three, four, 24);
             int r = Mipmaps.getColorComponent(one, two, three, four, 16);

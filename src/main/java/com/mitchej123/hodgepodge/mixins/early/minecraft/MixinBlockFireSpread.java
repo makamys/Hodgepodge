@@ -21,7 +21,7 @@ public class MixinBlockFireSpread {
     public void hodgepodge$fixChunkNPE(World world, int x, int y, int z, int par5, Random par6, int par7,
             ForgeDirection face, CallbackInfo ci) {
         if (x >= -30000000 && z >= -30000000 && x < 30000000 && z < 30000000 && y >= 0 && y < 256) {
-            if (world.getChunkFromChunkCoords(x >> 4, z >> 4) == null) ci.cancel();
+            if (world.getChunkAt(x >> 4, z >> 4) == null) ci.cancel();
         }
     }
 }

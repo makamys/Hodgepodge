@@ -14,7 +14,7 @@ import com.rwtema.extrautils.block.BlockDrum;
 abstract public class MixinBlockDrum {
 
     @Redirect(
-            method = "onBlockActivated",
+            method = "use",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/item/Item;hasContainerItem(Lnet/minecraft/item/ItemStack;)Z",
@@ -24,7 +24,7 @@ abstract public class MixinBlockDrum {
     }
 
     @Redirect(
-            method = "onBlockActivated",
+            method = "use",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/item/Item;getContainerItem(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;",

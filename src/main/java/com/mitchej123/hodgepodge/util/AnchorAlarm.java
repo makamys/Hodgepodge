@@ -29,7 +29,7 @@ public class AnchorAlarm {
     public static void addNewAnchor(EntityLivingBase entityliving, TileEntity te) {
         if (entityliving instanceof EntityPlayerMP) {
             byte[] oldbuf = null;
-            if (entityliving.getEntityData().hasKey(NBT_KEY))
+            if (entityliving.getEntityData().contains(NBT_KEY))
                 oldbuf = entityliving.getEntityData().getByteArray(NBT_KEY);
             byte[] newbuf = new byte[(oldbuf == null ? 0 : oldbuf.length) + 16];
             ByteBuf newbufwrap = Unpooled.wrappedBuffer(newbuf);
@@ -40,10 +40,10 @@ public class AnchorAlarm {
     }
 
     public static boolean listSavedAnchors(String playerName, World w) {
-        for (Object obj : w.playerEntities) {
+        for (Object obj : w.players) {
             if (((EntityPlayer) obj).getDisplayName().equals(playerName)) {
                 NBTTagCompound nbt = ((EntityPlayer) obj).getEntityData();
-                if (!nbt.hasKey(NBT_KEY)) {
+                if (!nbt.contains(NBT_KEY)) {
                     Common.log.debug("[AnchorDebug] No anchors listed for player " + playerName);
                 } else {
                     byte[] bytes = nbt.getByteArray(NBT_KEY);
@@ -73,11 +73,11 @@ public class AnchorAlarm {
     }
 
     private static void saveCoordinatesToPlayer(EntityLivingBase player, ByteBuf buf, byte[] bytes, TileEntity te) {
-        buf.writeInt(te.getWorldObj().provider.dimensionId);
-        buf.writeInt(te.xCoord);
-        buf.writeInt(te.yCoord);
-        buf.writeInt(te.zCoord);
-        player.getEntityData().setByteArray(NBT_KEY, bytes);
+        buf.writeInt(te.getWorld().dimension.id);
+        buf.writeInt(te.x);
+        buf.writeInt(te.y);
+        buf.writeInt(te.z);
+        player.getEntityData().putByteArray(NBT_KEY, bytes);
     }
 
     @SuppressWarnings("unused")
@@ -87,7 +87,7 @@ public class AnchorAlarm {
             if (AnchorDebug) {
                 Common.log.debug("[AnchorDebug] Loading anchors for player " + event.player.getDisplayName());
             }
-            if (event.player.getEntityData().hasKey(NBT_KEY)) {
+            if (event.player.getEntityData().contains(NBT_KEY)) {
                 byte[] bytes = event.player.getEntityData().getByteArray(NBT_KEY);
                 ByteBuf buf = Unpooled.wrappedBuffer(bytes);
                 int N = bytes.length / 16;
@@ -108,8 +108,8 @@ public class AnchorAlarm {
                         }
                         if (w != null) {
                             // if there is some different tile at the place, ok, we will load this chunk one last time
-                            w.getChunkProvider().provideChunk(x >> 4, z >> 4);
-                            TileEntity t = w.getTileEntity(x, y, z);
+                            w.getChunkSource().getChunk(x >> 4, z >> 4);
+                            TileEntity t = w.getBlockEntity(x, y, z);
                             if (loadedTiles.contains(t)) continue;
                             loadedTiles.add(t);
                             if (AnchorDebug) System.out.println(
@@ -119,7 +119,7 @@ public class AnchorAlarm {
                                         ((TileAnchorWorld) t).getOwner(),
                                         event.player.getGameProfile())) {
                                     // Thermos skips remotely loaded entities
-                                    t.updateEntity();
+                                    t.tick();
                                     // if there is still our tile there, save it for later
                                     ++validAlarmCount;
                                     newbuf.writeInt(dim);
@@ -153,7 +153,7 @@ public class AnchorAlarm {
                 }
                 byte[] newbytes = new byte[validAlarmCount * 16];
                 newbuf.readBytes(newbytes);
-                event.player.getEntityData().setByteArray(NBT_KEY, newbytes);
+                event.player.getEntityData().putByteArray(NBT_KEY, newbytes);
             } else {
                 if (AnchorDebug)
                     System.out.println("[AnchorDebug] No listed anchors for player " + event.player.getDisplayName());

@@ -20,15 +20,15 @@ import ic2.core.item.ItemCropSeed;
 public class MixinItemCropSeed {
 
     @Inject(
-            method = "onItemUse",
+            method = "use",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/entity/player/EntityPlayer;inventory:Lnet/minecraft/entity/player/InventoryPlayer;"),
             cancellable = true)
     public void hodgepodge$onItemUse(ItemStack itemstack, EntityPlayer entityplayer, World world, int x, int y, int z,
             int side, float a, float b, float c, CallbackInfoReturnable<Boolean> ci) {
-        ItemStack currentItem = entityplayer.inventory.getCurrentItem();
-        currentItem.stackSize -= 1;
+        ItemStack currentItem = entityplayer.inventory.getMainHandStack();
+        currentItem.size -= 1;
         ci.setReturnValue(true);
         ci.cancel();
     }

@@ -14,6 +14,6 @@ public class FMLClientHandlerHook {
         // The original method called CharMatcher.anyOf(ALLOWED_CHARS) on every call of this method, which is called for
         // every GT Material...
         // Borrow the idea from newer forge and cache the result of allowed_chars (negated) and use that instead
-        return DISALLOWED_CHAR_MATCHER.removeFrom(StringUtils.stripControlCodes(message));
+        return DISALLOWED_CHAR_MATCHER.removeFrom(StringUtils.stripFormatting(message));
     }
 }

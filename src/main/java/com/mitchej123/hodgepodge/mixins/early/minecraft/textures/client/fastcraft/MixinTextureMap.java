@@ -17,6 +17,6 @@ public abstract class MixinTextureMap {
                     target = "Lfastcraft/HC;h(Lnet/minecraft/client/renderer/texture/TextureMap;)V",
                     remap = false))
     private void hodgepodge$disableUpdateAnimationsTweak(TextureMap map) {
-        map.updateAnimations();
+        map.bindAndTick();
     }
 }

@@ -20,29 +20,29 @@ import com.mitchej123.hodgepodge.util.AnchorAlarm;
 public class DebugCommand extends CommandBase {
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "hp";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender) {
+    public String getUsage(ICommandSender sender) {
         return "Usage: hp <subcommand>. Valid subcommands are: toggle, anchor, randomNbt.";
     }
 
     private void printHelp(ICommandSender sender) {
-        sender.addChatMessage(new ChatComponentText("Usage: hp <toggle|anchor|randomNbt>"));
-        sender.addChatMessage(new ChatComponentText("\"toggle anchordebug\" - toggles RC anchor debugging"));
-        sender.addChatMessage(
+        sender.sendMessage(new ChatComponentText("Usage: hp <toggle|anchor|randomNbt>"));
+        sender.sendMessage(new ChatComponentText("\"toggle anchordebug\" - toggles RC anchor debugging"));
+        sender.sendMessage(
                 new ChatComponentText(
                         "\"anchor list [player]\" - list RC anchors placed by the player (empty for current player)"));
-        sender.addChatMessage(
+        sender.sendMessage(
                 new ChatComponentText(
                         "\"randomNbt [bytes]\" - adds a random byte array of the given size to the held item"));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] ss) {
+    public List getSuggestions(ICommandSender sender, String[] ss) {
         List<String> l = new ArrayList<>();
         String test = ss.length == 0 ? "" : ss[0].trim();
         if (ss.length == 0 || ss.length == 1
@@ -56,14 +56,14 @@ public class DebugCommand extends CommandBase {
             String test1 = ss[1].trim();
             if (test1.isEmpty() || ("list".startsWith(test1) && !"list".equals(test1))) l.add("list");
             else if ("list".equals(test1) && ss.length > 2) {
-                l.addAll(getListOfStringsMatchingLastWord(ss, MinecraftServer.getServer().getAllUsernames()));
+                l.addAll(suggestMatching(ss, MinecraftServer.getInstance().getPlayerNames()));
             }
         }
         return l;
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] strings) {
+    public void run(ICommandSender sender, String[] strings) {
         if (strings.length < 1) {
             printHelp(sender);
             return;
@@ -75,17 +75,17 @@ public class DebugCommand extends CommandBase {
                     return;
                 }
                 AnchorAlarm.AnchorDebug = !AnchorAlarm.AnchorDebug;
-                sender.addChatMessage(new ChatComponentText("Anchor debugging: " + AnchorAlarm.AnchorDebug));
+                sender.sendMessage(new ChatComponentText("Anchor debugging: " + AnchorAlarm.AnchorDebug));
                 break;
             case "anchor":
                 if (strings.length < 2 || !strings[1].equals("list")) {
                     printHelp(sender);
                     return;
                 }
-                String playerName = strings.length > 2 ? strings[2] : sender.getCommandSenderName();
-                if (!AnchorAlarm.listSavedAnchors(playerName, sender.getEntityWorld())) sender.addChatMessage(
+                String playerName = strings.length > 2 ? strings[2] : sender.getName();
+                if (!AnchorAlarm.listSavedAnchors(playerName, sender.getSourceWorld())) sender.sendMessage(
                         new ChatComponentText("No such player entity in the current world : " + playerName));
-                else sender.addChatMessage(
+                else sender.sendMessage(
                         new ChatComponentText("Saved anchors dumped to the log for player: " + playerName));
                 break;
             case "randomNbt":
@@ -98,21 +98,21 @@ public class DebugCommand extends CommandBase {
                     printHelp(sender);
                     return;
                 }
-                final EntityPlayerMP player = getCommandSenderAsPlayer(sender);
+                final EntityPlayerMP player = asPlayer(sender);
                 if (player.inventory == null) {
                     return;
                 }
-                final ItemStack stack = player.inventory.getCurrentItem();
+                final ItemStack stack = player.inventory.getMainHandStack();
                 if (stack == null || stack.getItem() == null) {
                     return;
                 }
-                if (stack.stackTagCompound == null) {
-                    stack.stackTagCompound = new NBTTagCompound();
+                if (stack.nbt == null) {
+                    stack.nbt = new NBTTagCompound();
                 }
                 final byte[] randomData = RandomUtils.nextBytes(byteCount);
-                stack.stackTagCompound.setByteArray("DebugJunk", randomData);
-                player.inventory.inventoryChanged = true;
-                player.inventoryContainer.detectAndSendChanges();
+                stack.nbt.putByteArray("DebugJunk", randomData);
+                player.inventory.dirty = true;
+                player.playerMenu.updateListeners();
                 break;
         }
     }

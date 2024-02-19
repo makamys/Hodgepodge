@@ -29,14 +29,14 @@ public abstract class MixinRailcraftCokeOvenPollution extends TileMultiBlock {
         super(patterns);
     }
 
-    @Inject(method = "updateEntity", at = @At("HEAD"))
+    @Inject(method = "tick", at = @At("HEAD"))
     private void hodgepodge$addPollution(CallbackInfo ci) {
-        if (this.worldObj.isRemote || !this.cooking || !this.isMaster) return;
-        if ((this.worldObj.getTotalWorldTime() % 20) == 0) {
+        if (this.world.isMultiplayer || !this.cooking || !this.isMaster) return;
+        if ((this.world.getTime() % 20) == 0) {
             final int pollution = (((TileMultiBlock) this) instanceof TileBlastFurnace)
                     ? PollutionConfig.advancedCokeOvenPollutionAmount
                     : PollutionConfig.cokeOvenPollutionAmount;
-            PollutionHelper.addPollution(this.worldObj.getChunkFromBlockCoords(this.xCoord, this.zCoord), pollution);
+            PollutionHelper.addPollution(this.world.getChunk(this.x, this.z), pollution);
         }
     }
 }

@@ -13,10 +13,10 @@ public class AnimationsRenderUtils {
     }
 
     public static void markBlockTextureForUpdate(IIcon icon, IBlockAccess blockAccess) {
-        TextureMap textureMap = Minecraft.getMinecraft().getTextureMapBlocks();
-        TextureAtlasSprite textureAtlasSprite = textureMap.getAtlasSprite(icon.getIconName());
+        TextureMap textureMap = Minecraft.getInstance().getBlocksAtlas();
+        TextureAtlasSprite textureAtlasSprite = textureMap.getSprite(icon.getName());
 
-        if (textureAtlasSprite != null && textureAtlasSprite.hasAnimationMetadata()) {
+        if (textureAtlasSprite != null && textureAtlasSprite.isAnimated()) {
             // null if called by anything but chunk render cache update (for example to get blocks rendered as items in
             // inventory)
             if (blockAccess instanceof ITexturesCache) {

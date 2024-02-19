@@ -15,27 +15,27 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class MixinWorldServerUpdateEntities extends World {
 
     @Shadow
-    private int updateEntityTick;
+    private int idleTimeout;
 
     /**
      * @author kubasz
      * @reason Vanilla skipping the update when no players are in the dimension causes memory leaks
      */
     @Overwrite
-    public void updateEntities() {
-        if (this.playerEntities.isEmpty() && getPersistentChunks().isEmpty()) {
-            if (this.updateEntityTick++ >= 1200) {
+    public void tickEntities() {
+        if (this.players.isEmpty() && getPersistentChunks().isEmpty()) {
+            if (this.idleTimeout++ >= 1200) {
                 // Make sure to run cleanup code every 10s
-                if (this.updateEntityTick % 200 == 0) {
-                    super.updateEntities();
+                if (this.idleTimeout % 200 == 0) {
+                    super.tickEntities();
                 }
                 return;
             }
         } else {
-            this.updateEntityTick = 0;
+            this.idleTimeout = 0;
         }
 
-        super.updateEntities();
+        super.tickEntities();
     }
 
     private MixinWorldServerUpdateEntities(ISaveHandler p_i45368_1_, String p_i45368_2_, WorldProvider p_i45368_3_,

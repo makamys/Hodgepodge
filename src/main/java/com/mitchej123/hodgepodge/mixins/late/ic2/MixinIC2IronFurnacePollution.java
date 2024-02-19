@@ -24,10 +24,10 @@ public abstract class MixinIC2IronFurnacePollution extends TileEntity {
 
     @Inject(method = "updateEntityServer", at = @At("TAIL"))
     private void hodgepodge$updateEntityServer(CallbackInfo ci) {
-        if (worldObj.isRemote || !isBurning()) return;
-        if ((worldObj.getTotalWorldTime() % 20) == 0) {
+        if (world.isMultiplayer || !isBurning()) return;
+        if ((world.getTime() % 20) == 0) {
             PollutionHelper.addPollution(
-                    worldObj.getChunkFromBlockCoords(xCoord, zCoord),
+                    world.getChunk(x, z),
                     PollutionConfig.furnacePollutionAmount);
         }
     }

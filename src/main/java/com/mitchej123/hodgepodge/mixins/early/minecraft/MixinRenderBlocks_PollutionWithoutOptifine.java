@@ -33,7 +33,7 @@ public class MixinRenderBlocks_PollutionWithoutOptifine {
                     target = "Lnet/minecraft/block/Block;colorMultiplier(Lnet/minecraft/world/IBlockAccess;III)I"))
     private int hodgepodge$pollutionBlockLiquid(int color, Block block, int blockX, int blockY, int blockZ) {
         ColorOverrideType type = Common.config.liquidBlocks.matchesID(block);
-        if (type == null || block.getMaterial() != Material.water) {
+        if (type == null || block.getMaterial() != Material.WATER) {
             return color;
         }
         return type.getColor(color, blockX, blockZ);

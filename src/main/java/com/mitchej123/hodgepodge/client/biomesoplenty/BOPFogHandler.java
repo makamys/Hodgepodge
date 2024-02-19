@@ -23,8 +23,8 @@ public class BOPFogHandler {
 
     public static void onRenderFog(EntityViewRenderEvent.RenderFogEvent event, FogHandler fogHandler) {
         EntityLivingBase entity = event.entity;
-        int playerX = MathHelper.floor_double(entity.posX);
-        int playerZ = MathHelper.floor_double(entity.posZ);
+        int playerX = MathHelper.floor(entity.x);
+        int playerZ = MathHelper.floor(entity.z);
 
         if (playerX == AccessorFogHandler.getFogX() && playerZ == AccessorFogHandler.getFogZ()
                 && AccessorFogHandler.isFogInit())
@@ -48,7 +48,7 @@ public class BOPFogHandler {
         @Override
         public void run() {
             while (true) {
-                if (Minecraft.getMinecraft().theWorld == null) {
+                if (Minecraft.getInstance().world == null) {
                     ticks.set(0);
                     try {
                         sleep(1000);
@@ -65,12 +65,12 @@ public class BOPFogHandler {
                         for (int x = -distance; x <= distance; x++) {
                             for (int z = -distance; z <= distance; z++) {
 
-                                EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-                                int playerX = MathHelper.floor_double(player.posX);
-                                int playerY = MathHelper.floor_double(player.posY);
-                                int playerZ = MathHelper.floor_double(player.posZ);
-                                BiomeGenBase biome = Minecraft.getMinecraft().theWorld
-                                        .getBiomeGenForCoords(playerX + x, playerZ + z);
+                                EntityClientPlayerMP player = Minecraft.getInstance().player;
+                                int playerX = MathHelper.floor(player.x);
+                                int playerY = MathHelper.floor(player.y);
+                                int playerZ = MathHelper.floor(player.z);
+                                BiomeGenBase biome = Minecraft.getInstance().world
+                                        .getBiome(playerX + x, playerZ + z);
 
                                 if (biome instanceof IBiomeFog) {
                                     float distancePart = ((IBiomeFog) biome)
@@ -78,21 +78,21 @@ public class BOPFogHandler {
                                     float weightPart = 1.0f;
 
                                     if (x == -distance) {
-                                        double xDiff = 1.0 - (player.posX - playerX);
+                                        double xDiff = 1.0 - (player.x - playerX);
                                         distancePart *= xDiff;
                                         weightPart *= xDiff;
                                     } else if (x == distance) {
-                                        double xDiff = player.posX - playerX;
+                                        double xDiff = player.x - playerX;
                                         distancePart *= xDiff;
                                         weightPart *= xDiff;
                                     }
 
                                     if (z == -distance) {
-                                        double zDiff = 1.0 - (player.posZ - playerZ);
+                                        double zDiff = 1.0 - (player.z - playerZ);
                                         distancePart *= zDiff;
                                         weightPart *= zDiff;
                                     } else if (z == distance) {
-                                        double zDiff = player.posZ - playerZ;
+                                        double zDiff = player.z - playerZ;
                                         distancePart *= zDiff;
                                         weightPart *= zDiff;
                                     }
@@ -112,8 +112,8 @@ public class BOPFogHandler {
                         float farPlaneDistanceScaleBiome = (0.1f * (1.0f - fpDistanceBiomeFogAvg)
                                 + 0.75f * fpDistanceBiomeFogAvg);
 
-                        AccessorFogHandler.setFogX(Minecraft.getMinecraft().thePlayer.posX);
-                        AccessorFogHandler.setFogZ(Minecraft.getMinecraft().thePlayer.posZ);
+                        AccessorFogHandler.setFogX(Minecraft.getInstance().player.x);
+                        AccessorFogHandler.setFogZ(Minecraft.getInstance().player.z);
                         farPlaneDistanceScale = (farPlaneDistanceScaleBiome * weightBiomeFog + 0.75f * weightDefault)
                                 / weightMixed;
                         AccessorFogHandler.setFogFarPlaneDistance(Math.min(farPlaneDistance, farPlaneDistanceM));

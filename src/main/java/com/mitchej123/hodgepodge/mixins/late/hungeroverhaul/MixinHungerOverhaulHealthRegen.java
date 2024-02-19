@@ -22,12 +22,12 @@ public class MixinHungerOverhaulHealthRegen {
     @SubscribeEvent
     public void onHealthRegenTick(HealthRegenEvent.GetRegenTickPeriod event) {
         float wellfedModifier = 1.0F;
-        if (event.player.isPotionActive(HungerOverhaul.potionWellFed)) wellfedModifier = 0.75F;
+        if (event.player.hasStatusEffect(HungerOverhaul.potionWellFed)) wellfedModifier = 0.75F;
 
-        EnumDifficulty difficulty = event.player.worldObj.difficultySetting;
+        EnumDifficulty difficulty = event.player.world.difficulty;
         float difficultyModifierHealing = 1.0F;
         if (IguanaConfig.difficultyScalingHealing) {
-            if (difficulty.getDifficultyId() <= EnumDifficulty.EASY.getDifficultyId())
+            if (difficulty.getId() <= EnumDifficulty.EASY.getId())
                 difficultyModifierHealing = 0.75F;
             else if (difficulty == EnumDifficulty.HARD) difficultyModifierHealing = 1.5F;
         }

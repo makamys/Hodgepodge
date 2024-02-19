@@ -21,27 +21,27 @@ import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 public abstract class MixinWorld_FixLightUpdateLag {
 
     @Shadow
-    public abstract boolean doChunksNearChunkExist(int p_72873_1_, int p_72873_2_, int p_72873_3_, int p_72873_4_);
+    public abstract boolean isAreaLoaded(int p_72873_1_, int p_72873_2_, int p_72873_3_, int p_72873_4_);
 
-    @ModifyConstant(method = "updateLightByType", constant = @Constant(intValue = 17, ordinal = 0))
+    @ModifyConstant(method = "checkLight", constant = @Constant(intValue = 17, ordinal = 0))
     public int hodgepodge$modifyRangeCheck1(int cst) {
         return 16;
     }
 
     @Inject(
-            method = "updateLightByType",
+            method = "checkLight",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/world/World;theProfiler:Lnet/minecraft/profiler/Profiler;",
+                    target = "Lnet/minecraft/world/World;profiler:Lnet/minecraft/profiler/Profiler;",
                     shift = At.Shift.BEFORE,
                     ordinal = 0))
     public void hodgepodge$modifyUpdateRange(EnumSkyBlock p_147463_1_, int x, int y, int z,
             CallbackInfoReturnable<Boolean> cir, @Share("updateRange") LocalIntRef updateRange) {
-        updateRange.set(this.doChunksNearChunkExist(x, y, z, 18) ? 17 : 15);
+        updateRange.set(this.isAreaLoaded(x, y, z, 18) ? 17 : 15);
     }
 
     @ModifyConstant(
-            method = "updateLightByType",
+            method = "checkLight",
             constant = { @Constant(intValue = 17, ordinal = 1), @Constant(intValue = 17, ordinal = 2) })
     public int hodgepodge$modifyRangeCheck2(int cst, @Share("updateRange") LocalIntRef updateRange) {
         return updateRange.get();

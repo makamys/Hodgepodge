@@ -12,7 +12,7 @@ import com.mitchej123.hodgepodge.config.TweaksConfig;
 public class MixinEffectRenderer {
 
     @ModifyConstant(
-            method = "addEffect(Lnet/minecraft/client/particle/EntityFX;)V",
+            method = "addParticle(Lnet/minecraft/client/particle/EntityFX;)V",
             constant = @Constant(intValue = 4000, ordinal = 0),
             require = 1)
     private int hodgepodge$getParticleLimit(int constant) {

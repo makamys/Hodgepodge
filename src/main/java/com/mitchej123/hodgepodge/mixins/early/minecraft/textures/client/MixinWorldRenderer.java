@@ -21,7 +21,7 @@ import com.mitchej123.hodgepodge.textures.ITexturesCache;
 public class MixinWorldRenderer implements ITexturesCache {
 
     @Shadow
-    public boolean isInFrustum;
+    public boolean visible;
 
     @Unique
     private Set<IIcon> renderedIcons;
@@ -36,9 +36,9 @@ public class MixinWorldRenderer implements ITexturesCache {
         return chunkCache;
     }
 
-    @Inject(method = "getGLCallListForPass", at = @At("HEAD"))
+    @Inject(method = "getGlList", at = @At("HEAD"))
     private void hodgepodge$getGLCallListForPass(int pass, CallbackInfoReturnable<Integer> cir) {
-        if (isInFrustum && pass == 0 && renderedIcons != null) {
+        if (visible && pass == 0 && renderedIcons != null) {
             for (IIcon icon : renderedIcons) {
                 ((IPatchedTextureAtlasSprite) icon).markNeedsAnimationUpdate();
             }

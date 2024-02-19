@@ -45,7 +45,7 @@ public class LongChunkCoordIntPairSet implements Set<ChunkCoordIntPair> {
     @Override
     public boolean contains(Object o) {
         if (o instanceof ChunkCoordIntPair chunkCoordIntPair) {
-            return longSet.contains(ChunkPosUtil.toLong(chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos));
+            return longSet.contains(ChunkPosUtil.toLong(chunkCoordIntPair.x, chunkCoordIntPair.z));
         } else if (o instanceof Long l) {
             return longSet.contains(l);
         }
@@ -86,7 +86,7 @@ public class LongChunkCoordIntPairSet implements Set<ChunkCoordIntPair> {
 
     @Override
     public boolean add(ChunkCoordIntPair chunkCoordIntPair) {
-        return this.longSet.add(ChunkPosUtil.toLong(chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos));
+        return this.longSet.add(ChunkPosUtil.toLong(chunkCoordIntPair.x, chunkCoordIntPair.z));
     }
 
     public boolean addLong(long l) {
@@ -96,7 +96,7 @@ public class LongChunkCoordIntPairSet implements Set<ChunkCoordIntPair> {
     @Override
     public boolean remove(Object o) {
         if (o instanceof ChunkCoordIntPair chunkCoordIntPair) {
-            return longSet.remove(ChunkPosUtil.toLong(chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos));
+            return longSet.remove(ChunkPosUtil.toLong(chunkCoordIntPair.x, chunkCoordIntPair.z));
         } else if (o instanceof Long l) {
             return longSet.remove(l);
         }
@@ -112,7 +112,7 @@ public class LongChunkCoordIntPairSet implements Set<ChunkCoordIntPair> {
     public boolean addAll(@NotNull Collection<? extends ChunkCoordIntPair> c) {
         boolean added = false;
         for (ChunkCoordIntPair chunkCoordIntPair : c) {
-            added |= this.longSet.add(ChunkPosUtil.toLong(chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos));
+            added |= this.longSet.add(ChunkPosUtil.toLong(chunkCoordIntPair.x, chunkCoordIntPair.z));
         }
         return added;
     }
@@ -128,7 +128,7 @@ public class LongChunkCoordIntPairSet implements Set<ChunkCoordIntPair> {
         for (Object o : c) {
             if (o instanceof ChunkCoordIntPair chunkCoordIntPair) {
                 removed |= longSet
-                        .remove(ChunkPosUtil.toLong(chunkCoordIntPair.chunkXPos, chunkCoordIntPair.chunkZPos));
+                        .remove(ChunkPosUtil.toLong(chunkCoordIntPair.x, chunkCoordIntPair.z));
             } else if (o instanceof Long l) {
                 removed |= longSet.remove(l);
             }

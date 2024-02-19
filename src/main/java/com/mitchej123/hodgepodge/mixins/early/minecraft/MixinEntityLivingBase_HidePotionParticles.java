@@ -21,6 +21,6 @@ public class MixinEntityLivingBase_HidePotionParticles {
             method = "updatePotionEffects()V")
     private boolean hodgepodge$showParticles(World instance, String particleName, double x, double y, double z,
             double velocityX, double velocityY, double velocityZ) {
-        return !TweaksConfig.hidePotionParticlesFromSelf || (Object) this != Minecraft.getMinecraft().thePlayer;
+        return !TweaksConfig.hidePotionParticlesFromSelf || (Object) this != Minecraft.getInstance().player;
     }
 }

@@ -17,10 +17,10 @@ public class MixinGameSetttings {
             slice = @Slice(
                     from = @At(
                             value = "FIELD",
-                            target = "Lnet/minecraft/client/settings/GameSettings;keyBindPickBlock:Lnet/minecraft/client/settings/KeyBinding;"),
+                            target = "Lnet/minecraft/client/settings/GameSettings;pickItemKey:Lnet/minecraft/client/settings/KeyBinding;"),
                     to = @At(
                             value = "FIELD",
-                            target = "Lnet/minecraft/client/settings/GameSettings;keyBindSprint:Lnet/minecraft/client/settings/KeyBinding;")))
+                            target = "Lnet/minecraft/client/settings/GameSettings;sprintKey:Lnet/minecraft/client/settings/KeyBinding;")))
     private String hodgepodge$ChangeSprintCategory(String original) {
         return "key.categories.movement";
     }

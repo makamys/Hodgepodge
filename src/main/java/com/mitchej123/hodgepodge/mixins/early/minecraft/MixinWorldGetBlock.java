@@ -18,7 +18,7 @@ public class MixinWorldGetBlock {
             method = "getBlock(III)Lnet/minecraft/block/Block;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/chunk/Chunk;getBlock(III)Lnet/minecraft/block/Block;"),
+                    target = "Lnet/minecraft/world/chunk/Chunk;getBlockAt(III)Lnet/minecraft/block/Block;"),
             require = 1)
     /*
      * Reimplementation of a fix inspired by FalsePattern & SirFell
@@ -26,8 +26,8 @@ public class MixinWorldGetBlock {
     public Block hodgepodge$getBlock(Chunk chunk, int x, int y, int z) {
         if (chunk == null) {
             Common.log.info("NULL chunk found at {}, {}, {}, returning Blocks.air", x, y, z);
-            return Blocks.air;
+            return Blocks.AIR;
         }
-        return chunk.getBlock(x, y, z);
+        return chunk.getBlockAt(x, y, z);
     }
 }

@@ -11,7 +11,7 @@ import com.mitchej123.hodgepodge.config.TweaksConfig;
 @Mixin(GuiChat.class)
 public class MixinGuiChat_LongerMessages {
 
-    @ModifyConstant(method = "initGui", constant = @Constant(intValue = 100))
+    @ModifyConstant(method = "init", constant = @Constant(intValue = 100))
     public int hodgepodge$LongerMessages(int constant) {
         return TweaksConfig.longerSentMessages ? 256 : constant;
     }

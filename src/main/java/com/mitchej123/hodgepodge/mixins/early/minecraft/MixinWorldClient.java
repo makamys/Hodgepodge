@@ -12,10 +12,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinWorldClient {
 
     @Redirect(
-            method = "spawnEntityInWorld",
+            method = "addEntity",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/audio/SoundHandler;playSound(Lnet/minecraft/client/audio/ISound;)V"))
+                    target = "Lnet/minecraft/client/audio/SoundHandler;play(Lnet/minecraft/client/audio/ISound;)V"))
     private void hodgepodge$CancelSound(SoundHandler soundHandler, ISound isound) {
         // do nothing
     }

@@ -14,14 +14,14 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(value = SoundHandler.class)
 public class MixinSoundHandler {
 
-    @Inject(method = "loadSoundResource", at = @At("HEAD"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+    @Inject(method = "register", at = @At("HEAD"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
     private void hodgepodge$loadSoundResource(ResourceLocation resourceLocation, SoundList soundList,
             CallbackInfo callbackInfo) {
         String name = resourceLocation.toString();
 
         if (name.startsWith("minecraft:step") || name.startsWith("minecraft:random.bow")
                 || name.equals("minecraft:game.potion.smash")) {
-            soundList.setSoundCategory(SoundCategory.PLAYERS);
+            soundList.setCategory(SoundCategory.PLAYERS);
         }
     }
 }

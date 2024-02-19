@@ -15,16 +15,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinNetHandlerPlayClient_FixHandleSetSlot {
 
     @Shadow
-    private Minecraft gameController;
+    private Minecraft minecraft;
 
     @Inject(
-            method = "handleSetSlot(Lnet/minecraft/network/play/server/S2FPacketSetSlot;)V",
+            method = "handleMenuSlotUpdate(Lnet/minecraft/network/play/server/S2FPacketSetSlot;)V",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/inventory/Container;putStackInSlot(ILnet/minecraft/item/ItemStack;)V"),
+                    target = "Lnet/minecraft/inventory/Container;setStack(ILnet/minecraft/item/ItemStack;)V"),
             cancellable = true)
     public void hodgepodge$checkPacketItemStackSize(S2FPacketSetSlot packetIn, CallbackInfo ci) {
-        EntityClientPlayerMP entityclientplayermp = this.gameController.thePlayer;
-        if (packetIn.func_149173_d() >= entityclientplayermp.openContainer.inventorySlots.size()) ci.cancel();
+        EntityClientPlayerMP entityclientplayermp = this.minecraft.player;
+        if (packetIn.getSlotId() >= entityclientplayermp.menu.slots.size()) ci.cancel();
     }
 }

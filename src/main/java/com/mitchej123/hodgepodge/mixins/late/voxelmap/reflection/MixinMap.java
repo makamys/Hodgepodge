@@ -23,7 +23,7 @@ public class MixinMap {
             method = { "<init>", "do(Lnet/minecraft/client/Minecraft;)V" },
             remap = false)
     private Object hodgepodge$getEntityRenderMap(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return RenderManager.instance.entityRenderMap;
+        return RenderManager.INSTANCE.renderers;
     }
 
     @Redirect(
@@ -36,7 +36,7 @@ public class MixinMap {
             method = { "byte()V", "case()V" },
             remap = false)
     private Object hodgepodge$getChatLines(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((GuiNewChat) var0).chatLines;
+        return ((GuiNewChat) var0).messages;
     }
 
     @Redirect(
@@ -49,6 +49,6 @@ public class MixinMap {
             method = "int()Lnet/minecraft/client/renderer/texture/DynamicTexture;",
             remap = false)
     private Object hodgepodge$getLightmapTexture(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return Minecraft.getMinecraft().entityRenderer.lightmapTexture;
+        return Minecraft.getInstance().gameRenderer.lightmapTexture;
     }
 }

@@ -30,12 +30,12 @@ public class MixinServerConfigurationManager {
     private void hodgepodge$firePlayerChangedDimensionEvent(FMLCommonHandler instance, EntityPlayer player, int fromDim,
             int toDim) {
         if (player instanceof EntityPlayerMP) {
-            ServersideAttributeMap attributeMap = (ServersideAttributeMap) player.getAttributeMap();
+            ServersideAttributeMap attributeMap = (ServersideAttributeMap) player.getAttributes();
             @SuppressWarnings("unchecked")
-            Collection<IAttributeInstance> watchedAttribs = attributeMap.getWatchedAttributes();
+            Collection<IAttributeInstance> watchedAttribs = attributeMap.getTrackable();
             if (!watchedAttribs.isEmpty()) {
-                ((EntityPlayerMP) player).playerNetServerHandler
-                        .sendPacket(new S20PacketEntityProperties(player.getEntityId(), watchedAttribs));
+                ((EntityPlayerMP) player).networkHandler
+                        .sendPacket(new S20PacketEntityProperties(player.getNetworkId(), watchedAttribs));
             }
         }
 

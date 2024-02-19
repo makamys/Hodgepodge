@@ -16,10 +16,10 @@ import com.mitchej123.hodgepodge.hax.LongChunkCoordIntPairSet;
 public abstract class MixinWorldClient_FixAllocations {
 
     @Shadow
-    private final Set previousActiveChunkSet = new LongChunkCoordIntPairSet();
+    private final Set lastTickingChunks = new LongChunkCoordIntPairSet();
 
     @Redirect(
-            method = "func_147456_g",
+            method = "tickChunks",
             at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
     private Iterator<?> fixAllocations(Set instance) {
         return ((LongChunkCoordIntPairSet) instance).unsafeIterator();

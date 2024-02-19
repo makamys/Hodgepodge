@@ -20,13 +20,13 @@ import com.mitchej123.hodgepodge.config.FixesConfig;
 public abstract class MixinEntityPlayer {
 
     @Shadow
-    protected abstract void collideWithPlayer(Entity p_71044_1_);
+    protected abstract void collideWithEntity(Entity p_71044_1_);
 
     @Inject(
-            method = "onLivingUpdate",
+            method = "tickAi",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;",
+                    target = "Lnet/minecraft/world/World;getEntities(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;",
                     shift = At.Shift.AFTER))
     public void hodgepodge$resetItemCounter(CallbackInfo ci,
             @Share("itemEntityCounter") LocalIntRef itemEntityCounter) {
@@ -34,23 +34,23 @@ public abstract class MixinEntityPlayer {
     }
 
     @Redirect(
-            method = "onLivingUpdate",
+            method = "tickAi",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/player/EntityPlayer;collideWithPlayer(Lnet/minecraft/entity/Entity;)V"),
+                    target = "Lnet/minecraft/entity/player/EntityPlayer;collideWithEntity(Lnet/minecraft/entity/Entity;)V"),
             slice = @Slice(
                     from = @At(
                             value = "INVOKE",
-                            target = "Lnet/minecraft/world/World;getEntitiesWithinAABBExcludingEntity(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;")))
+                            target = "Lnet/minecraft/world/World;getEntities(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/AxisAlignedBB;)Ljava/util/List;")))
     public void hodgepodge$ThrottleItemPickupEvent(EntityPlayer instance, Entity entity,
             @Share("itemEntityCounter") LocalIntRef itemEntityCounter) {
         if (entity instanceof EntityItem) {
             if (itemEntityCounter.get() < FixesConfig.itemStacksPickedUpPerTick) {
-                this.collideWithPlayer(entity);
+                this.collideWithEntity(entity);
             }
             itemEntityCounter.set(itemEntityCounter.get() + 1);
             return;
         }
-        this.collideWithPlayer(entity);
+        this.collideWithEntity(entity);
     }
 }

@@ -13,10 +13,10 @@ import com.mitchej123.hodgepodge.mixins.interfaces.BlockExt_FixXray;
 public abstract class MixinBlock_FixXray implements BlockExt_FixXray {
 
     @Shadow
-    public abstract AxisAlignedBB getCollisionBoundingBoxFromPool(World worldIn, int x, int y, int z);
+    public abstract AxisAlignedBB getCollisionShape(World worldIn, int x, int y, int z);
 
     public boolean hodgepodge$shouldRayTraceStopOnBlock(World worldIn, int x, int y, int z) {
-        return this.getCollisionBoundingBoxFromPool(worldIn, x, y, z) != null;
+        return this.getCollisionShape(worldIn, x, y, z) != null;
     }
 
 }

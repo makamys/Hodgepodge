@@ -39,7 +39,7 @@ public abstract class MixinRenderBlockFluid {
             AnimationsRenderUtils.markBlockTextureForUpdate(icon, currentBlockAccess);
             return icon;
         }
-        return ((TextureMap) Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.locationBlocksTexture))
-                .getAtlasSprite("missingno");
+        return ((TextureMap) Minecraft.getInstance().getTextureManager().get(TextureMap.BLOCKS_LOCATION))
+                .getSprite("missingno");
     }
 }

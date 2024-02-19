@@ -23,10 +23,10 @@ public abstract class MixinTextureMap extends AbstractTexture {
 
     @Shadow
     @Final
-    private List<TextureAtlasSprite> listAnimatedSprites;
+    private List<TextureAtlasSprite> animatedSprites;
 
     @Unique
-    private static final Minecraft mc = Minecraft.getMinecraft();
+    private static final Minecraft mc = Minecraft.getInstance();
 
     /**
      * @author laetansky
@@ -35,27 +35,27 @@ public abstract class MixinTextureMap extends AbstractTexture {
      *         performance decrease
      */
     @Overwrite
-    public void updateAnimations() {
+    public void bindAndTick() {
         boolean renderAllAnimations = HodgepodgeClient.animationsMode.is(AnimationMode.ALL);
         boolean renderVisibleAnimations = HodgepodgeClient.animationsMode.is(AnimationMode.VISIBLE_ONLY);
 
-        mc.mcProfiler.startSection("updateAnimations");
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.getGlTextureId());
+        mc.profiler.push("updateAnimations");
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.getGlId());
         // C Style loop should be faster
-        int size = listAnimatedSprites.size();
+        int size = animatedSprites.size();
         for (int i = 0; i < size; i++) {
-            TextureAtlasSprite textureAtlasSprite = listAnimatedSprites.get(i);
+            TextureAtlasSprite textureAtlasSprite = animatedSprites.get(i);
             IPatchedTextureAtlasSprite patchedTextureAtlasSprite = ((IPatchedTextureAtlasSprite) textureAtlasSprite);
 
             if (renderAllAnimations || (renderVisibleAnimations && patchedTextureAtlasSprite.needsAnimationUpdate())) {
-                mc.mcProfiler.startSection(textureAtlasSprite.getIconName());
-                textureAtlasSprite.updateAnimation();
+                mc.profiler.push(textureAtlasSprite.getName());
+                textureAtlasSprite.tick();
                 patchedTextureAtlasSprite.unmarkNeedsAnimationUpdate();
-                mc.mcProfiler.endSection();
+                mc.profiler.pop();
             } else {
                 patchedTextureAtlasSprite.updateAnimationsDryRun();
             }
         }
-        mc.mcProfiler.endSection();
+        mc.profiler.pop();
     }
 }

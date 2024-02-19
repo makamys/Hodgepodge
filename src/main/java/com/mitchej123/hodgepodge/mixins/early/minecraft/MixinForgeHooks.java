@@ -46,7 +46,7 @@ public class MixinForgeHooks {
             int end = matcher.end();
 
             // Append the previous left overs.
-            ichat.appendText(string.substring(lastEnd, start));
+            ichat.append(string.substring(lastEnd, start));
             lastEnd = end;
             String url = string.substring(start, end);
             IChatComponent link = new ChatComponentText(url);
@@ -56,18 +56,18 @@ public class MixinForgeHooks {
                 if ((new URI(url)).getScheme() == null) url = "http://" + url;
             } catch (URISyntaxException e) {
                 // Bad syntax bail out!
-                ichat.appendText(url);
+                ichat.append(url);
                 continue;
             }
 
             // Set the click event and append the link.
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-            link.getChatStyle().setChatClickEvent(click);
-            ichat.appendSibling(link);
+            link.getStyle().setClickEvent(click);
+            ichat.append(link);
         }
 
         // Append the rest of the message.
-        ichat.appendText(string.substring(lastEnd));
+        ichat.append(string.substring(lastEnd));
         return ichat;
     }
 }

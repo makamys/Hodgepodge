@@ -19,9 +19,9 @@ public class MixinIc2WaterKinetic {
             at = @At(target = "Lnet/minecraft/world/World;getBlock(III)Lnet/minecraft/block/Block;", value = "INVOKE"),
             method = "checkSpace(IZ)I")
     private Block hodgepodge$getBlockWithCheck(World instance, int x, int y, int z, Operation<Block> original) {
-        if (instance.blockExists(x, y, z)) {
+        if (instance.isChunkLoaded(x, y, z)) {
             return original.call(instance, x, y, z);
         }
-        return Blocks.air;
+        return Blocks.AIR;
     }
 }

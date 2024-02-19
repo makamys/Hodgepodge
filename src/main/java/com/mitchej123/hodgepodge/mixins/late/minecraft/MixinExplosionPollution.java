@@ -19,21 +19,21 @@ import com.mitchej123.hodgepodge.util.PollutionHelper;
 public class MixinExplosionPollution {
 
     @Shadow
-    float explosionSize;
+    float power;
 
     @Shadow
-    World worldObj;
+    World world;
 
     @Shadow
-    double explosionX;
+    double x;
 
     @Shadow
-    double explosionZ;
+    double z;
 
-    @Inject(method = "doExplosionA", at = @At(value = "TAIL"))
+    @Inject(method = "damageEntities", at = @At(value = "TAIL"))
     public void hodgepodge$addExplosionPollution(CallbackInfo ci) {
-        if (!this.worldObj.isRemote) PollutionHelper.addPollution(
-                this.worldObj.getChunkFromBlockCoords((int) this.explosionX, (int) this.explosionZ),
-                (int) Math.ceil(explosionSize * PollutionConfig.explosionPollutionAmount));
+        if (!this.world.isMultiplayer) PollutionHelper.addPollution(
+                this.world.getChunk((int) this.x, (int) this.z),
+                (int) Math.ceil(power * PollutionConfig.explosionPollutionAmount));
     }
 }

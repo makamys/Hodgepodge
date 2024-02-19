@@ -17,14 +17,14 @@ import com.gtnewhorizon.gtnhlib.GTNHLib;
 public class MixinBlockBed {
 
     @Redirect(
-            method = "onBlockActivated",
+            method = "use",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/entity/player/EntityPlayer;addChatComponentMessage(Lnet/minecraft/util/IChatComponent;)V"))
+                    target = "Lnet/minecraft/entity/player/EntityPlayer;addMessage(Lnet/minecraft/util/IChatComponent;)V"))
     public void hodgepodge$sendMessageAboveHotbar(EntityPlayer player, IChatComponent chatComponent) {
         GTNHLib.proxy.sendMessageAboveHotbar(
                 (EntityPlayerMP) player,
-                chatComponent.setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE)),
+                chatComponent.setStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE)),
                 60,
                 true,
                 true);

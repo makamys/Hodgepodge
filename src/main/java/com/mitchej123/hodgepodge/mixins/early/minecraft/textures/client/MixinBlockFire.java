@@ -15,10 +15,10 @@ import com.mitchej123.hodgepodge.textures.AnimationsRenderUtils;
 public class MixinBlockFire {
 
     @Shadow
-    private IIcon[] field_149850_M;
+    private IIcon[] fireSprite;
 
-    @Inject(method = "getFireIcon", at = @At("HEAD"))
+    @Inject(method = "get", at = @At("HEAD"))
     private void hodgepodge$markFireAnimationForUpdate(int p_149840_1_, CallbackInfoReturnable<IIcon> cir) {
-        AnimationsRenderUtils.markBlockTextureForUpdate(field_149850_M[p_149840_1_]);
+        AnimationsRenderUtils.markBlockTextureForUpdate(fireSprite[p_149840_1_]);
     }
 }

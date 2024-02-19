@@ -20,7 +20,7 @@ public class MixinWaypointManager$1 {
             method = "do(Lcom/thevoxelbox/voxelmap/c/h;)V", // void addIcons(TextureAtlas)
             remap = false)
     private Object hodgepodge$getDefaultResourcePacks(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return Minecraft.getMinecraft().defaultResourcePacks;
+        return Minecraft.getInstance().defaultResourcePacks;
     }
 
     @Redirect(
@@ -33,7 +33,7 @@ public class MixinWaypointManager$1 {
             method = "do(Lnet/minecraft/client/resources/FileResourcePack;Ljava/util/List;)V",
             remap = false)
     private static Object hodgepodge$getResourcePackZipFile(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((FileResourcePack) var0).resourcePackZipFile;
+        return ((FileResourcePack) var0).zip;
     }
 
     @Redirect(
@@ -46,7 +46,7 @@ public class MixinWaypointManager$1 {
             method = "do(Lnet/minecraft/client/resources/FolderResourcePack;Ljava/util/List;)V",
             remap = false)
     private static Object hodgepodge$getResourcePackFile(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((FolderResourcePack) var0).resourcePackFile;
+        return ((FolderResourcePack) var0).file;
     }
 
 }

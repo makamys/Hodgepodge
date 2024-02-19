@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinTessellator {
 
     @Redirect(
-            method = "getVertexState",
+            method = "buildState",
             at = @At(value = "NEW", target = "(ILjava/util/Comparator;)Ljava/util/PriorityQueue;"))
     public PriorityQueue<Integer> hodgepodge$preserveQuadOrder(int bufferIndex, Comparator<Integer> comparator, float x,
             float y, float z) {

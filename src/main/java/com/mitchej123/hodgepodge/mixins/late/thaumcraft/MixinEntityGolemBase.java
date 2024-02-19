@@ -28,9 +28,9 @@ public class MixinEntityGolemBase extends EntityGolem {
         super(p_i1686_1_);
     }
 
-    @Inject(method = "readEntityFromNBT", at = @At(value = "TAIL"))
+    @Inject(method = "readCustomNbt", at = @At(value = "TAIL"))
     public void hodgepodge$readEntityFromNBT(NBTTagCompound nbt, CallbackInfo ci) {
-        NBTTagList nbtTagList = nbt.getTagList("markers", 10);
+        NBTTagList nbtTagList = nbt.getList("markers", 10);
         ThaumcraftMixinMethods.overwriteMarkersDimID(nbtTagList, this.markers);
     }
 

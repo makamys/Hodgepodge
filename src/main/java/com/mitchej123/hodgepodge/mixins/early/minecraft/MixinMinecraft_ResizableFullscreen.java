@@ -25,7 +25,7 @@ public class MixinMinecraft_ResizableFullscreen {
             method = "toggleFullscreen",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setVSyncEnabled(Z)V", remap = false))
     private void hodgepodge$fixFullscreenResizable(CallbackInfo ci) {
-        if (!this.fullscreen && (Util.getOSType() == Util.EnumOS.WINDOWS)) {
+        if (!this.fullscreen && (Util.getOS() == Util.EnumOS.WINDOWS)) {
             Display.setResizable(false);
             Display.setResizable(true);
         }

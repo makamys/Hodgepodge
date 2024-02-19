@@ -18,15 +18,15 @@ public abstract class MixinTextureAtlasSprite implements IPatchedTextureAtlasSpr
     private boolean needsAnimationUpdate = false;
 
     @Shadow
-    protected int tickCounter;
+    protected int frameTicks;
     @Shadow
-    protected int frameCounter;
+    protected int frameIndex;
 
     @Shadow
-    private AnimationMetadataSection animationMetadata;
+    private AnimationMetadataSection animation;
 
     @Shadow
-    protected List<?> framesTextureData;
+    protected List<?> frames;
 
     @Override
     public void markNeedsAnimationUpdate() {
@@ -46,14 +46,14 @@ public abstract class MixinTextureAtlasSprite implements IPatchedTextureAtlasSpr
     @Override
     public void updateAnimationsDryRun() {
         // account for weird subclass that doesn't use the stock mechanisms for animation
-        if (animationMetadata == null || framesTextureData == null) return;
+        if (animation == null || frames == null) return;
 
-        tickCounter++;
-        if (tickCounter >= animationMetadata.getFrameTimeSingle(frameCounter)) {
-            int j = this.animationMetadata.getFrameCount() == 0 ? framesTextureData.size()
-                    : this.animationMetadata.getFrameCount();
-            this.frameCounter = (this.frameCounter + 1) % j;
-            this.tickCounter = 0;
+        frameTicks++;
+        if (frameTicks >= animation.getTime(frameIndex)) {
+            int j = this.animation.getFrameCount() == 0 ? frames.size()
+                    : this.animation.getFrameCount();
+            this.frameIndex = (this.frameIndex + 1) % j;
+            this.frameTicks = 0;
         }
     }
 }

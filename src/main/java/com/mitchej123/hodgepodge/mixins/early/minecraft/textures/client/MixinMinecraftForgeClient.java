@@ -24,15 +24,15 @@ public class MixinMinecraftForgeClient {
     private static void hodgepodge$beforeRenderItem(ItemStack itemStack, IItemRenderer.ItemRenderType type,
             CallbackInfoReturnable<IItemRenderer> cir) {
         Item item = itemStack.getItem();
-        if (item.requiresMultipleRenderPasses()) {
-            for (int i = 0; i < item.getRenderPasses(itemStack.getItemDamage()); i++) {
+        if (item.isLayered()) {
+            for (int i = 0; i < item.getRenderPasses(itemStack.getMetadata()); i++) {
                 IIcon icon = item.getIcon(itemStack, i);
                 if (icon instanceof TextureAtlasSprite) {
                     ((IPatchedTextureAtlasSprite) icon).markNeedsAnimationUpdate();
                 }
             }
         } else {
-            IIcon icon = itemStack.getIconIndex();
+            IIcon icon = itemStack.getSprite();
             if (icon instanceof TextureAtlasSprite) {
                 ((IPatchedTextureAtlasSprite) icon).markNeedsAnimationUpdate();
             }

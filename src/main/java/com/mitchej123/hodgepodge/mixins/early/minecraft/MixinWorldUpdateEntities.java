@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinWorldUpdateEntities {
 
     @Redirect(
-            method = "updateEntities",
+            method = "tickEntities",
             at = @At(value = "INVOKE", target = "Ljava/util/List;removeAll(Ljava/util/Collection;)Z"))
     public boolean fasterRemoveAll(List<TileEntity> targetList, Collection<TileEntity> collectionToRemove) {
         // Borrowed from Forge for 1.12.2 -- forge: faster "contains" makes this removal much more efficient

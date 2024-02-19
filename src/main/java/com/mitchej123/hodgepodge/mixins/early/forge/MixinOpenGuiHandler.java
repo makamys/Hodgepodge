@@ -50,7 +50,7 @@ public abstract class MixinOpenGuiHandler extends SimpleChannelInboundHandler<FM
      */
     @Inject(
             method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lcpw/mods/fml/common/network/internal/FMLMessage$OpenGui;)V",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/inventory/Container;windowId:I", opcode = PUTFIELD),
+            at = @At(value = "FIELD", target = "Lnet/minecraft/inventory/Container;networkId:I", opcode = PUTFIELD),
             cancellable = true)
     public void hodgepodge$dontSetWindowId(CallbackInfo ci, @Share("openGuiSuccess") LocalBooleanRef openGuiSuccess) {
         if (!openGuiSuccess.get()) ci.cancel();

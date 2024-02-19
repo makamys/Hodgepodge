@@ -31,8 +31,8 @@ public class MixinRailcraftBoilerPollution {
     @Inject(method = "tick", at = @At(value = "HEAD"), remap = false)
     private void hodgepodge$tick(int x, CallbackInfo ci) {
         if (!this.isBurning || this.tile == null || this.tile.getWorld() == null) return;
-        final World world = this.tile.getWorldObj();
-        if ((world.getTotalWorldTime() % 20) == 0) {
+        final World world = this.tile.getWorld();
+        if ((world.getTime() % 20) == 0) {
             int pollutionAmount;
             if (this.tile instanceof TileMultiBlock)
                 pollutionAmount = (((TileMultiBlock) this.tile).getComponents().size() - x)
@@ -42,7 +42,7 @@ public class MixinRailcraftBoilerPollution {
             else pollutionAmount = 40;
 
             PollutionHelper
-                    .addPollution(world.getChunkFromBlockCoords(this.tile.getX(), this.tile.getZ()), pollutionAmount);
+                    .addPollution(world.getChunk(this.tile.getX(), this.tile.getZ()), pollutionAmount);
         }
     }
 }

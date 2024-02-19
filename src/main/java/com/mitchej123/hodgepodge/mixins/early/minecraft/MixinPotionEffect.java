@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinPotionEffect {
 
     @Shadow
-    int potionID;
+    int effect;
 
     /**
      * @author [com]buster
@@ -24,7 +24,7 @@ public class MixinPotionEffect {
     @Inject(method = "<init>(IIIZ)V", at = @At("RETURN"))
     public void hodgepodge$primaryConstructor(int p_i1576_1_, int p_i1576_2_, int p_i1576_3_, boolean p_i1576_4_,
             CallbackInfo ci) {
-        this.potionID = p_i1576_1_ & 0xff;
+        this.effect = p_i1576_1_ & 0xff;
     }
 
     /**
@@ -32,11 +32,11 @@ public class MixinPotionEffect {
      * @reason Force treat the potion id as an unsigned byte (to allow IDs 128-255)
      */
     @Overwrite
-    public static PotionEffect readCustomPotionEffectFromNBT(NBTTagCompound tag) {
+    public static PotionEffect fromNbt(NBTTagCompound tag) {
         int potion = ((int) tag.getByte("Id")) & 0xff;
-        if (potion >= 0 && potion < Potion.potionTypes.length && Potion.potionTypes[potion] != null) {
+        if (potion >= 0 && potion < Potion.BY_ID.length && Potion.BY_ID[potion] != null) {
             byte amplifier = tag.getByte("Amplifier");
-            int duration = tag.getInteger("Duration");
+            int duration = tag.getInt("Duration");
             boolean ambient = tag.getBoolean("Ambient");
             return new PotionEffect(potion, duration, amplifier, ambient);
         } else {

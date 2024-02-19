@@ -15,12 +15,12 @@ import com.rwtema.extrautils.crafting.RecipeUnEnchanting;
 public class MixinRecipeUnEnchanting {
 
     @Redirect(
-            method = "getCraftingResult",
+            method = "apply",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/enchantment/EnchantmentHelper;setEnchantments(Ljava/util/Map;Lnet/minecraft/item/ItemStack;)V"))
     public void onEnchantmentApplied(@SuppressWarnings("rawtypes") Map map, ItemStack stack) {
         EnchantmentHelper.setEnchantments(map, stack);
-        stack.stackSize = 1;
+        stack.size = 1;
     }
 }

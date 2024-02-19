@@ -14,12 +14,12 @@ public class MixinGameSettings {
     @Dynamic("Field is added by optifine's ASM")
     public int ofChunkLoading;
 
-    @Inject(method = "loadOptions", at = @At("TAIL"))
+    @Inject(method = "load", at = @At("TAIL"))
     public void hodgepodge$forceChunkLoadingToDefault(CallbackInfo ci) {
         this.ofChunkLoading = 0;
     }
 
-    @Inject(method = "setOptionValue", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setValue", at = @At("HEAD"), cancellable = true)
     public void hodgepodge$fixOptifineChunkLoadingCrash(GameSettings.Options option, int p_74306_2_, CallbackInfo ci) {
         if (option != null && option.name().equals("CHUNK_LOADING")) {
             ci.cancel();

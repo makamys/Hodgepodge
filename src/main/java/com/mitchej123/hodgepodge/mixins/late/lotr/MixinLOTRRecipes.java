@@ -25,7 +25,7 @@ public class MixinLOTRRecipes {
         try {
             // Get experienceList
             Map<ItemStack, Float> map = ObfuscationReflectionHelper
-                    .getPrivateValue(FurnaceRecipes.class, FurnaceRecipes.smelting(), 2);
+                    .getPrivateValue(FurnaceRecipes.class, FurnaceRecipes.getInstance(), 2);
             map.put(new ItemStack(item, 1, 32767), xp);
         } catch (Exception e) {
             e.printStackTrace();

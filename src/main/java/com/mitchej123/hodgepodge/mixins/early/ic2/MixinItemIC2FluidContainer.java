@@ -12,7 +12,7 @@ import ic2.core.item.ItemIC2FluidContainer;
 public class MixinItemIC2FluidContainer {
 
     @Redirect(
-            method = "addInformation(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;Ljava/util/List;Z)V",
+            method = "addHoverText(Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/player/EntityPlayer;Ljava/util/List;Z)V",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraftforge/fluids/FluidRegistry;getFluidName(Lnet/minecraftforge/fluids/FluidStack;)Ljava/lang/String;",

@@ -22,17 +22,17 @@ public class MixinForgeHooks_ModernPickBlock {
     @Inject(method = "onPickBlock", at = @At(value = "RETURN", ordinal = 4), cancellable = true)
     private static void hodgepodge$onPickBlock(MovingObjectPosition target, EntityPlayer player, World world,
             CallbackInfoReturnable<Boolean> cir, @Local(name = "result") LocalRef<ItemStack> result) {
-        Minecraft clientObject = Minecraft.getMinecraft();
+        Minecraft clientObject = Minecraft.getInstance();
         for (int x = 9; x < 36; x++) {
-            ItemStack stack = player.inventory.getStackInSlot(x);
-            if (stack != null && stack.isItemEqual(result.get())
-                    && ItemStack.areItemStackTagsEqual(stack, result.get())) {
-                int moveSlot = player.inventory.currentItem;
+            ItemStack stack = player.inventory.getStack(x);
+            if (stack != null && stack.matchesItem(result.get())
+                    && ItemStack.matchesNbt(stack, result.get())) {
+                int moveSlot = player.inventory.selectedSlot;
                 moveSlot = 36 + moveSlot;
 
-                clientObject.playerController.windowClick(player.inventoryContainer.windowId, x, 0, 0, player);
-                clientObject.playerController.windowClick(player.inventoryContainer.windowId, moveSlot, 0, 0, player);
-                clientObject.playerController.windowClick(player.inventoryContainer.windowId, x, 0, 0, player);
+                clientObject.interactionManager.clickSlot(player.playerMenu.networkId, x, 0, 0, player);
+                clientObject.interactionManager.clickSlot(player.playerMenu.networkId, moveSlot, 0, 0, player);
+                clientObject.interactionManager.clickSlot(player.playerMenu.networkId, x, 0, 0, player);
                 cir.setReturnValue(true);
                 return;
             }

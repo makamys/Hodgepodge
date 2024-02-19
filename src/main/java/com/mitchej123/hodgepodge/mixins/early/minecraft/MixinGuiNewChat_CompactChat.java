@@ -25,31 +25,31 @@ public class MixinGuiNewChat_CompactChat {
 
     @Shadow
     @Final
-    private List<ChatLine> chatLines;
+    private List<ChatLine> messages;
 
     @Shadow
     @Final
-    private List<ChatLine> field_146253_i; // drawnChatLines
+    private List<ChatLine> trimmedMessages; // drawnChatLines
 
-    @Inject(method = "func_146237_a", at = @At("HEAD"))
+    @Inject(method = "addMessage", at = @At("HEAD"))
     private void hodgepodge$compactChat(IChatComponent imsg, int chatLineId, int updateCounter, boolean refresh,
             CallbackInfo ci, @Share("deleteMessage") LocalBooleanRef deleteMessage) {
-        deleteMessage.set(!refresh && ChatHandler.tryCompactMessage(imsg, this.chatLines) && chatLineId == 0);
+        deleteMessage.set(!refresh && ChatHandler.tryCompactMessage(imsg, this.messages) && chatLineId == 0);
     }
 
     @Inject(
-            method = "func_146237_a",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiNewChat;getChatOpen()Z"),
+            method = "addMessage",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiNewChat;isChatFocused()Z"),
             locals = LocalCapture.CAPTURE_FAILSOFT)
     private void hodgepodge$deletePrevious(IChatComponent imsg, int chatLineId, int updateCounter, boolean refresh,
             CallbackInfo ci, int k, int l, ChatComponentText chatcomponenttext, ArrayList<ChatComponentText> arraylist,
             @Share("deleteMessage") LocalBooleanRef deleteMessage) {
         if (!deleteMessage.get()) return;
-        if (this.chatLines.isEmpty()) return;
-        this.chatLines.remove(0);
+        if (this.messages.isEmpty()) return;
+        this.messages.remove(0);
         for (int i = 0; i < arraylist.size(); i++) {
-            if (!this.field_146253_i.isEmpty()) {
-                this.field_146253_i.remove(0);
+            if (!this.trimmedMessages.isEmpty()) {
+                this.trimmedMessages.remove(0);
             }
         }
     }

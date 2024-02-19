@@ -38,7 +38,7 @@ public abstract class MixinSkullDurabilityDisplay {
             cancellable = true)
     private void fixSkullText(ItemStack itemStack, CallbackInfoReturnable<String> cir) {
         if (itemStack.getItem() instanceof ItemSkull) {
-            cir.setReturnValue(itemStack.getDisplayName());
+            cir.setReturnValue(itemStack.getHoverName());
         }
     }
 }

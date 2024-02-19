@@ -15,9 +15,9 @@ public class ChatHandler {
     public static boolean tryCompactMessage(IChatComponent imsg, List<ChatLine> chatLines) {
         if (chatLines.isEmpty()) return false;
         final ChatLine chatLine = chatLines.get(0);
-        final IChatComponent prevMsg = chatLine.func_151461_a();
+        final IChatComponent prevMsg = chatLine.getText();
         if (areMessagesIdentical(imsg, prevMsg)) {
-            imsg.appendSibling(new ChatComponentCount(previousCount + 1));
+            imsg.append(new ChatComponentCount(previousCount + 1));
             return true;
         }
         return false;

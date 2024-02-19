@@ -19,14 +19,14 @@ public class MixinItemBlockThirstyTank implements IFluidContainerItem {
 
     @Override
     public FluidStack getFluid(ItemStack container) {
-        return container.hasTagCompound() ? FluidStack.loadFluidStackFromNBT(container.stackTagCompound) : null;
+        return container.hasNbt() ? FluidStack.loadFluidStackFromNBT(container.nbt) : null;
     }
 
     @Override
     public int getCapacity(ItemStack container) {
         int capacityInBuckets = TileEntityThirstyTank.CAPACITY_IN_BUCKETS_DEFAULT;
-        if (container != null && container.hasTagCompound()) {
-            final int[] glyphs = ModTileEntity.getIntArrayFromNbtOrDefault(container.stackTagCompound, "Glyphs", 0, 6);
+        if (container != null && container.hasNbt()) {
+            final int[] glyphs = ModTileEntity.getIntArrayFromNbtOrDefault(container.nbt, "Glyphs", 0, 6);
             final int glyphOfTheReservoirId = 8;
             final int glyphOfTheReservoirCount = (int) Arrays.stream(glyphs)
                     .filter(glyph -> glyph == glyphOfTheReservoirId).count();
@@ -37,7 +37,7 @@ public class MixinItemBlockThirstyTank implements IFluidContainerItem {
 
     @Override
     public int fill(ItemStack container, FluidStack resource, boolean doFill) {
-        if (container.stackSize != 1) return 0;
+        if (container.size != 1) return 0;
         if (resource == null || resource.amount <= 0) return 0;
         FluidStack fluidStack = this.getFluid(container);
         if (fluidStack == null) fluidStack = new FluidStack(resource, 0);
@@ -52,7 +52,7 @@ public class MixinItemBlockThirstyTank implements IFluidContainerItem {
 
     @Override
     public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
-        if (container.stackSize != 1) return null;
+        if (container.size != 1) return null;
         FluidStack fluidStack = this.getFluid(container);
         if (fluidStack == null || fluidStack.amount <= 0) return null;
         int drain = Math.min(fluidStack.amount, maxDrain);
@@ -68,20 +68,20 @@ public class MixinItemBlockThirstyTank implements IFluidContainerItem {
     private void setFluid(ItemStack container, FluidStack resource) {
         if (container == null) return;
         if (resource != null && 0 < resource.amount) {
-            NBTTagCompound nbt = container.getTagCompound() != null ? container.getTagCompound() : new NBTTagCompound();
+            NBTTagCompound nbt = container.getNbt() != null ? container.getNbt() : new NBTTagCompound();
             resource.writeToNBT(nbt);
-            container.setTagCompound(nbt);
+            container.setNbt(nbt);
             return;
         }
-        NBTTagCompound nbt = container.getTagCompound();
+        NBTTagCompound nbt = container.getNbt();
         if (nbt == null) return;
-        if (nbt.hasKey("Glyphs")) {
+        if (nbt.contains("Glyphs")) {
             final int[] glyphs = nbt.getIntArray("Glyphs");
             nbt = new NBTTagCompound();
-            nbt.setIntArray("Glyphs", glyphs);
+            nbt.putIntArray("Glyphs", glyphs);
         } else {
             nbt = null;
         }
-        container.setTagCompound(nbt);
+        container.setNbt(nbt);
     }
 }

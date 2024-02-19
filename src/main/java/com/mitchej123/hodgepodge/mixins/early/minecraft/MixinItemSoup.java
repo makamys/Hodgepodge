@@ -23,13 +23,13 @@ public class MixinItemSoup extends ItemFood {
      * @reason Fix deleting stack (>1) when eating mushroom stew
      */
     @Overwrite
-    public ItemStack onEaten(ItemStack p_77654_1_, World p_77654_2_, EntityPlayer p_77654_3_) {
-        ItemStack emptyBowl = new ItemStack(Items.bowl);
+    public ItemStack finishUsing(ItemStack p_77654_1_, World p_77654_2_, EntityPlayer p_77654_3_) {
+        ItemStack emptyBowl = new ItemStack(Items.BOWL);
 
-        if (!p_77654_3_.inventory.addItemStackToInventory(emptyBowl)) {
-            p_77654_3_.dropPlayerItemWithRandomChoice(emptyBowl, true);
+        if (!p_77654_3_.inventory.insertStack(emptyBowl)) {
+            p_77654_3_.dropItem(emptyBowl, true);
         }
 
-        return super.onEaten(p_77654_1_, p_77654_2_, p_77654_3_);
+        return super.finishUsing(p_77654_1_, p_77654_2_, p_77654_3_);
     }
 }

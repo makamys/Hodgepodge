@@ -18,21 +18,21 @@ import com.rwtema.extrautils.block.BlockSpikeWood;
 public abstract class MixinBlockSpike {
 
     @Inject(
-            method = "onEntityCollidedWithBlock(Lnet/minecraft/world/World;IIILnet/minecraft/entity/Entity;)V",
+            method = "onEntityCollision(Lnet/minecraft/world/World;IIILnet/minecraft/entity/Entity;)V",
             at = @At("HEAD"))
     public void hodgepodge$onEntityCollidedWithBlockStart(World world, int x, int y, int z, Entity target,
             CallbackInfo ci) {
-        if (!world.isRemote) {
+        if (!world.isMultiplayer) {
             Hodgepodge.EVENT_HANDLER.setAidTriggerDisabled(true);
         }
     }
 
     @Inject(
-            method = "onEntityCollidedWithBlock(Lnet/minecraft/world/World;IIILnet/minecraft/entity/Entity;)V",
+            method = "onEntityCollision(Lnet/minecraft/world/World;IIILnet/minecraft/entity/Entity;)V",
             at = @At("RETURN"))
     public void hodgepodge$onEntityCollidedWithBlockEnd(World world, int x, int y, int z, Entity target,
             CallbackInfo ci) {
-        if (!world.isRemote) {
+        if (!world.isMultiplayer) {
             Hodgepodge.EVENT_HANDLER.setAidTriggerDisabled(false);
         }
     }

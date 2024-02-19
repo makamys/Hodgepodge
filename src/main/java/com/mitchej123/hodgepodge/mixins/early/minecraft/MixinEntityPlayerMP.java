@@ -28,29 +28,29 @@ public abstract class MixinEntityPlayerMP extends EntityLivingBase {
      * https://github.com/MinecraftForge/MinecraftForge/pull/4830 Use clonePlayer on 1.7.10 instead of
      * PlayerList.recreatePlayerEntity on 1.12
      */
-    @Inject(method = "clonePlayer(Lnet/minecraft/entity/player/EntityPlayer;Z)V", at = @At(value = "RETURN"))
+    @Inject(method = "copyFrom(Lnet/minecraft/entity/player/EntityPlayer;Z)V", at = @At(value = "RETURN"))
     private void hodgepodge$injectClonePlayer(EntityPlayer oldPlayer, boolean copyEverything, CallbackInfo ci) {
         if (copyEverything) {
             // Grab the attribute map from the old player
-            ServersideAttributeMap oldAttributeMap = (ServersideAttributeMap) oldPlayer.getAttributeMap();
+            ServersideAttributeMap oldAttributeMap = (ServersideAttributeMap) oldPlayer.getAttributes();
 
             // Grab the watched attributes
             @SuppressWarnings("unchecked")
-            Collection<IAttributeInstance> watchedAttribs = oldAttributeMap.getWatchedAttributes();
+            Collection<IAttributeInstance> watchedAttribs = oldAttributeMap.getTrackable();
 
             if (!watchedAttribs.isEmpty()) {
-                ServersideAttributeMap newAttributeMap = (ServersideAttributeMap) (this.getAttributeMap());
+                ServersideAttributeMap newAttributeMap = (ServersideAttributeMap) (this.getAttributes());
 
                 for (IAttributeInstance oldAttr : watchedAttribs) {
                     if (!(oldAttr instanceof ModifiableAttributeInstance)) continue;
 
                     // Get a new instance of a modifiable attribute based on the old one
-                    ModifiableAttributeInstance newInst = newAttributeMap.getAttributeInstance(oldAttr.getAttribute());
+                    ModifiableAttributeInstance newInst = newAttributeMap.get(oldAttr.getAttribute());
 
                     // Get the modifiers for the old attribute
                     for (AttributeModifier modifier : getModifiers((ModifiableAttributeInstance) oldAttr)) try {
                         // And apply them to the new attribute instance
-                        newInst.applyModifier(modifier);
+                        newInst.addModifier(modifier);
                     } catch (IllegalArgumentException ignored) {
                         // Be safe
                     }
@@ -68,7 +68,7 @@ public abstract class MixinEntityPlayerMP extends EntityLivingBase {
     private Collection<AttributeModifier> getModifiers(ModifiableAttributeInstance attr) {
         Set<AttributeModifier> toReturn = Sets.newHashSet();
         for (int i = 0; i < 3; ++i) {
-            toReturn.addAll(attr.getModifiersByOperation(i));
+            toReturn.addAll(attr.getModifiers(i));
         }
         return toReturn;
     }

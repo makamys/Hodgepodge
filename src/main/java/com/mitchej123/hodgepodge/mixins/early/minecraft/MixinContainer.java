@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinContainer {
 
     @Shadow
-    public List<Slot> inventorySlots;
+    public List<Slot> slots;
 
-    @Inject(method = "putStacksInSlots([Lnet/minecraft/item/ItemStack;)V", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "setStacks([Lnet/minecraft/item/ItemStack;)V", at = @At(value = "HEAD"), cancellable = true)
     public void hodgepodge$checkStacksSize(ItemStack[] p_75131_1_, CallbackInfo ci) {
-        if (this.inventorySlots.size() < p_75131_1_.length) ci.cancel();
+        if (this.slots.size() < p_75131_1_.length) ci.cancel();
     }
 }

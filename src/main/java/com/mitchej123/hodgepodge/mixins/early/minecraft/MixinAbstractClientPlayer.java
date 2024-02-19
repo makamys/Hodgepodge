@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 public class MixinAbstractClientPlayer {
 
     @ModifyConstant(
-            method = "getDownloadImageSkin",
+            method = "loadTexture",
             constant = @Constant(stringValue = "http://skins.minecraft.net/MinecraftSkins/%s.png"))
     private static String hodgepodge$redirectSkinUrl(String url) {
         return "https://visage.surgeplay.com/skin/%s.png";

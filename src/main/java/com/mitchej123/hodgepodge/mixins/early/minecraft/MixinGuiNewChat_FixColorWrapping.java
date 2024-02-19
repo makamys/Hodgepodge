@@ -12,7 +12,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 public class MixinGuiNewChat_FixColorWrapping {
 
     @ModifyVariable(
-            method = "func_146237_a",
+            method = "addMessage",
             at = @At(
                     value = "NEW",
                     target = "(Ljava/lang/String;)Lnet/minecraft/util/ChatComponentText;",

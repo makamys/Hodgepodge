@@ -17,7 +17,7 @@ public class MixinMap {
             method = "if(Lnet/minecraft/client/Minecraft;)V", // void drawMinimap(Minecraft)
             remap = false)
     private int hodgepodge$getYCoord() {
-        return (int) (Minecraft.getMinecraft().thePlayer.posY - 1);
+        return (int) (Minecraft.getInstance().player.y - 1);
     }
 
 }

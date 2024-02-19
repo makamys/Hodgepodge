@@ -17,7 +17,7 @@ import com.mitchej123.hodgepodge.util.RomanNumerals;
 public abstract class MixinEnchantment_FixRomanNumerals {
 
     @Shadow
-    public abstract String getName();
+    public abstract String getTranslationKey();
 
     @ModifyExpressionValue(
             method = "getTranslatedName",

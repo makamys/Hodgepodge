@@ -27,7 +27,7 @@ public class PollutionTooltip {
             String furnacePollution = String.format(producesPollutionFormat, PollutionConfig.furnacePollutionAmount);
 
             // Furnace and Iron Furnace
-            if (GT_Utility.areStacksEqual(event.itemStack, new ItemStack(Blocks.furnace)) || GT_Utility
+            if (GT_Utility.areStacksEqual(event.itemStack, new ItemStack(Blocks.FURNACE)) || GT_Utility
                     .areStacksEqual(event.itemStack, GT_ModHandler.getModItem("IC2", "blockMachine", 1, 1))) {
                 event.toolTip.add(furnacePollution);
             }

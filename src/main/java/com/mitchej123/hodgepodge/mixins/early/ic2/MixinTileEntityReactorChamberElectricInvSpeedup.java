@@ -25,7 +25,7 @@ public class MixinTileEntityReactorChamberElectricInvSpeedup {
     public void hodgepodge$onGetReactor(CallbackInfoReturnable<TileEntityNuclearReactorElectric> info) {
         if (master != null) {
             TileEntityNuclearReactorElectric ret;
-            if ((ret = master.get()) != null && !ret.isInvalid()) {
+            if ((ret = master.get()) != null && !ret.isRemoved()) {
                 info.setReturnValue(ret);
                 info.cancel();
             } else {

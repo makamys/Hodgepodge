@@ -20,6 +20,6 @@ public class MixinVoxelMap {
             method = "do(ZZ)V", // void lateInit(boolean, boolean)
             remap = false)
     private Object hodgepodge$getResourcePacks(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return Minecraft.getMinecraft().defaultResourcePacks;
+        return Minecraft.getInstance().defaultResourcePacks;
     }
 }

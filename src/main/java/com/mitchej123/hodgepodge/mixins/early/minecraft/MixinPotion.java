@@ -11,5 +11,5 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinPotion {
 
     @Shadow
-    public static final Potion[] potionTypes = Arrays.copyOf(Potion.potionTypes, 256);
+    public static final Potion[] BY_ID = Arrays.copyOf(Potion.BY_ID, 256);
 }

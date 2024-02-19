@@ -19,10 +19,10 @@ import com.mojang.authlib.GameProfile;
 public abstract class MixinNetHandlerLoginServer_OfflineMode {
 
     @Shadow
-    private GameProfile field_147337_i;
+    private GameProfile profile;
 
     @Shadow
-    public abstract void func_147322_a(String reason);
+    public abstract void disconnect(String reason);
 
     /**
      * @author Caedis
@@ -41,16 +41,16 @@ public abstract class MixinNetHandlerLoginServer_OfflineMode {
     }
 
     @Inject(
-            method = "func_147326_c()V",
+            method = "acceptLogin()V",
             at = @At(
                     value = "INVOKE_ASSIGN",
                     target = "Lnet/minecraft/server/network/NetHandlerLoginServer;func_152506_a(Lcom/mojang/authlib/GameProfile;)Lcom/mojang/authlib/GameProfile;",
                     shift = At.Shift.AFTER),
             cancellable = true)
     private void hodgepodge$func_147326_c(CallbackInfo ci) {
-        if (this.field_147337_i == null) {
+        if (this.profile == null) {
             // Disconnect null profiles from func_152506_a
-            this.func_147322_a(
+            this.disconnect(
                     "Login while the server is in online mode to be able to login while it is in offline mode.");
             ci.cancel();
         }

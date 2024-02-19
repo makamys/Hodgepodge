@@ -30,7 +30,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getBatHead(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelBat) var0).batHead;
+        return ((ModelBat) var0).head;
     }
 
     @Redirect(
@@ -44,7 +44,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getBlazeHead(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelBlaze) var0).blazeHead;
+        return ((ModelBlaze) var0).head;
     }
 
     @Redirect(
@@ -100,7 +100,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getOcelotHead(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelOcelot) var0).ocelotHead;
+        return ((ModelOcelot) var0).head;
     }
 
     @Redirect(
@@ -114,7 +114,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSilverfishBodyParts0(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSilverfish) var0).silverfishBodyParts;
+        return ((ModelSilverfish) var0).body;
     }
 
     @Redirect(
@@ -128,7 +128,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSilverfishBodyParts1(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSilverfish) var0).silverfishBodyParts;
+        return ((ModelSilverfish) var0).body;
     }
 
     @Redirect(
@@ -142,7 +142,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSlimeBodies0(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSlime) var0).slimeBodies;
+        return ((ModelSlime) var0).body;
     }
 
     @Redirect(
@@ -156,7 +156,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSlimeRightEye(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSlime) var0).slimeRightEye;
+        return ((ModelSlime) var0).rightEye;
     }
 
     @Redirect(
@@ -170,7 +170,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSlimeLeftEye(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSlime) var0).slimeLeftEye;
+        return ((ModelSlime) var0).leftEye;
     }
 
     @Redirect(
@@ -184,7 +184,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSlimeMouth(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSlime) var0).slimeMouth;
+        return ((ModelSlime) var0).mouth;
     }
 
     @Redirect(
@@ -198,7 +198,7 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSlimeBodies1(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSlime) var0).slimeBodies;
+        return ((ModelSlime) var0).body;
     }
 
     @Redirect(
@@ -212,6 +212,6 @@ public class MixinRadar {
             method = "do(Lcom/thevoxelbox/voxelmap/util/i;Lnet/minecraft/client/renderer/entity/Render;Lnet/minecraft/util/ResourceLocation;)Ljava/awt/image/BufferedImage;",
             remap = false)
     private Object hodgepodge$getSquidBody(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((ModelSquid) var0).squidBody;
+        return ((ModelSquid) var0).body;
     }
 }

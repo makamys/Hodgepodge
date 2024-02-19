@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinGuiScreenResourcePacks {
 
     @Inject(
-            method = "actionPerformed",
+            method = "buttonClicked",
             at = @At(
                     value = "INVOKE",
                     target = "Ljava/lang/Runtime;getRuntime()Ljava/lang/Runtime;",
@@ -23,7 +23,7 @@ public class MixinGuiScreenResourcePacks {
                     shift = At.Shift.BEFORE),
             cancellable = true)
     private void hodgepodge$fixFolderOpening(CallbackInfo ci) throws IOException {
-        Desktop.getDesktop().open(Minecraft.getMinecraft().getResourcePackRepository().getDirResourcepacks());
+        Desktop.getDesktop().open(Minecraft.getInstance().getResourcePacks().getDirectory());
         ci.cancel();
     }
 }

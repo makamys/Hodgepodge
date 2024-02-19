@@ -11,21 +11,21 @@ import com.mitchej123.hodgepodge.mixins.interfaces.MutableChunkCoordIntPair;
 public class MixinChunkCoordIntPair implements MutableChunkCoordIntPair {
 
     @Shadow
-    public int chunkXPos;
+    public int x;
     @Shadow
-    public int chunkZPos;
+    public int z;
 
     public void setChunkXPos(int chunkXPos) {
-        this.chunkXPos = chunkXPos;
+        this.x = chunkXPos;
     }
 
     public void setChunkZPos(int chunkZPos) {
-        this.chunkZPos = chunkZPos;
+        this.z = chunkZPos;
     }
 
     public MutableChunkCoordIntPair setChunkPos(int chunkXPos, int chunkZPos) {
-        this.chunkXPos = chunkXPos;
-        this.chunkZPos = chunkZPos;
+        this.x = chunkXPos;
+        this.z = chunkZPos;
         return this;
     }
 

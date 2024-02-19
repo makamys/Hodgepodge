@@ -25,7 +25,7 @@ public class MixinColorManager {
             method = "do(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZ)Ljava/util/List;",
             remap = false)
     private Object hodgepodge$getResourcePackZipFile(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((FileResourcePack) var0).resourcePackZipFile;
+        return ((FileResourcePack) var0).zip;
     }
 
     @Redirect(
@@ -39,7 +39,7 @@ public class MixinColorManager {
             method = "do(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZ)Ljava/util/List;",
             remap = false)
     private Object hodgepodge$getResourcePackFile(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((AbstractResourcePack) var0).resourcePackFile;
+        return ((AbstractResourcePack) var0).file;
     }
 
     @Redirect(
@@ -53,7 +53,7 @@ public class MixinColorManager {
             method = "for(Ljava/lang/String;)Ljava/util/List;",
             remap = false)
     private Object hodgepodge$getDomainResourceManagers(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((SimpleReloadableResourceManager) var0).domainResourceManagers;
+        return ((SimpleReloadableResourceManager) var0).packs;
     }
 
     @Redirect(
@@ -67,6 +67,6 @@ public class MixinColorManager {
             method = "for(Ljava/lang/String;)Ljava/util/List;",
             remap = false)
     private Object hodgepodge$getResourcePacks(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return ((FallbackResourceManager) var0).resourcePacks;
+        return ((FallbackResourceManager) var0).fallbacks;
     }
 }

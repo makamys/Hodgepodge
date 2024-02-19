@@ -24,14 +24,14 @@ public abstract class MixinS02PacketChat {
 
     private static final Logger LOGGER = LogManager.getLogger("ChatOverflowFix");
 
-    @Accessor("field_148919_a")
+    @Accessor("message")
     public abstract IChatComponent getMessage();
 
     @Redirect(
-            method = "writePacketData",
+            method = "write",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/network/PacketBuffer;writeStringToBuffer(Ljava/lang/String;)V"))
+                    target = "Lnet/minecraft/network/PacketBuffer;writeString(Ljava/lang/String;)V"))
     public void hodgepodge$redirectSerialize(PacketBuffer instance, String s) {
         byte[] bytes = s.getBytes(StandardCharsets.UTF_8);
         if (bytes.length > 32767) {
@@ -39,7 +39,7 @@ public abstract class MixinS02PacketChat {
                 String incidentId = "" + System.currentTimeMillis() + ThreadLocalRandom.current().nextInt(1000);
                 LOGGER.info("HUGE chat message caught. Incident ID {}. Serialized message {}.", incidentId, s);
                 bytes = Serializer
-                        .func_150696_a(
+                        .toJson(
                                 new ChatComponentText(
                                         EnumChatFormatting.RED
                                                 + "Someone tried to sent you a huge chat message that would kick you. "
@@ -49,22 +49,22 @@ public abstract class MixinS02PacketChat {
                                                 + incidentId
                                                 + EnumChatFormatting.RESET
                                                 + ". Start of original message: "
-                                                + getMessage().getUnformattedText().substring(0, 30)))
+                                                + getMessage().getString().substring(0, 30)))
                         .getBytes(StandardCharsets.UTF_8);
             } else {
                 LOGGER.info("HUGE chat message caught. Details are not logged here as requested in config.");
-                bytes = Serializer.func_150696_a(
+                bytes = Serializer.toJson(
                         new ChatComponentText(
                                 EnumChatFormatting.RED
                                         + "Someone tried to sent you a huge chat message that would kick you. "
                                         + "Ask your server admin to turn on logHugeChat in HodgePodge if you cannot identify the source of this and this keeps happening. "
                                         + EnumChatFormatting.RESET
                                         + "Start of original message: "
-                                        + getMessage().getUnformattedText().substring(0, 30)))
+                                        + getMessage().getString().substring(0, 30)))
                         .getBytes(StandardCharsets.UTF_8);
             }
         }
-        instance.writeVarIntToBuffer(bytes.length);
+        instance.writeVarInt(bytes.length);
         instance.writeBytes(bytes);
     }
 }

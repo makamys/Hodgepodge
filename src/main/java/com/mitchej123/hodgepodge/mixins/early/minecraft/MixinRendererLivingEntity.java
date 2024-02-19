@@ -14,19 +14,19 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinRendererLivingEntity {
 
     @Redirect(
-            method = "renderArrowsStuckInEntity",
+            method = "renderStuckArrows",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/RenderHelper;disableStandardItemLighting()V"))
+                    target = "Lnet/minecraft/client/renderer/RenderHelper;turnOff()V"))
     private void hodgepodge$disableCorrectLighting() {
         GL11.glDisable(GL11.GL_LIGHTING);
     }
 
     @Redirect(
-            method = "renderArrowsStuckInEntity",
+            method = "renderStuckArrows",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/RenderHelper;enableStandardItemLighting()V"))
+                    target = "Lnet/minecraft/client/renderer/RenderHelper;turnOn()V"))
     private void hodgepodge$enableCorrectLighting() {
         GL11.glEnable(GL11.GL_LIGHTING);
     }

@@ -10,13 +10,13 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinChunkCoordinates {
 
     @Shadow
-    public int posX;
+    public int x;
 
     @Shadow
-    public int posY;
+    public int y;
 
     @Shadow
-    public int posZ;
+    public int z;
 
     /**
      * @author mitchej123
@@ -24,6 +24,6 @@ public class MixinChunkCoordinates {
      */
     @Overwrite
     public int hashCode() {
-        return this.posX * 8976890 + this.posY * 981131 + this.posZ;
+        return this.x * 8976890 + this.y * 981131 + this.z;
     }
 }

@@ -18,7 +18,7 @@ public class MixinGuiFocalManipulator {
                     remap = false,
                     target = "Lthaumcraft/api/aspects/AspectList;getAspectsSorted()[Lthaumcraft/api/aspects/Aspect;",
                     value = "INVOKE"),
-            method = "drawGuiContainerBackgroundLayer")
+            method = "drawBackground")
     private Aspect[] hodgepodge$getAspectsSortedName(AspectList instance) {
         return AspectNameSorter.sort(instance);
     }

@@ -13,6 +13,6 @@ public class MixinIC2ArmorNanoSuit {
 
     @Redirect(
             method = "onArmorTick",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/Container;detectAndSendChanges()V"))
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/Container;updateListeners()V"))
     public void hodgepodge$cancelDetectAndSendChanges(Container instance) {}
 }

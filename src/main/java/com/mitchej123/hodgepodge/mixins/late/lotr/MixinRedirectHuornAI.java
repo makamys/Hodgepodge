@@ -51,7 +51,7 @@ public class MixinRedirectHuornAI extends EntityAIAvoidEntity {
             EntityCreature entity = (EntityCreature) entityField.get(this);
 
             IEntitySelector replaceSelect = target -> {
-                if (target.isEntityAlive() && entity.getEntitySenses().canSee(target)) {
+                if (target.isAlive() && entity.getMobVisibilityCache().canSee(target)) {
                     LOTREntityHuornBase huorn = (LOTREntityHuornBase) target;
                     return huorn.isHuornActive();
                 } else {

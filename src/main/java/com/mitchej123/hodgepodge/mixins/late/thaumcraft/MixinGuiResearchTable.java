@@ -18,7 +18,7 @@ public class MixinGuiResearchTable {
                     remap = false,
                     target = "Lthaumcraft/api/aspects/AspectList;getAspectsSorted()[Lthaumcraft/api/aspects/Aspect;",
                     value = "INVOKE"),
-            method = { "drawAspects", "drawAspectText", "drawScreen", "getClickedAspect" },
+            method = { "drawAspects", "drawAspectText", "render", "getClickedAspect" },
             remap = false)
     private Aspect[] hodgepodge$getAspectsSortedName(AspectList instance) {
         return AspectNameSorter.sort(instance);

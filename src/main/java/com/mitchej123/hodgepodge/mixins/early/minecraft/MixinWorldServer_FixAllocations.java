@@ -15,7 +15,7 @@ import com.mitchej123.hodgepodge.hax.LongChunkCoordIntPairSet;
 public abstract class MixinWorldServer_FixAllocations {
 
     @Redirect(
-            method = "func_147456_g",
+            method = "tickChunks",
             at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
     private Iterator<?> fixAllocations(Set instance) {
         return ((LongChunkCoordIntPairSet) instance).unsafeIterator();

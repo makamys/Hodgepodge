@@ -21,9 +21,9 @@ public class MixinPotionInjector {
 
     @Inject(method = "inject", at = @At("HEAD"), cancellable = true)
     private static void hodgepodge$inject(CallbackInfo ci) {
-        if (Potion.potionTypes.length > 255) {
+        if (Potion.BY_ID.length > 255) {
             ci.cancel();
         }
-        atropineHigh = new PotionProvider(TweaksConfig.atropineHighID, true, 0x00FF6E).setPotionName("Delirium");
+        atropineHigh = new PotionProvider(TweaksConfig.atropineHighID, true, 0x00FF6E).setKey("Delirium");
     }
 }

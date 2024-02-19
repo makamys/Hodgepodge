@@ -53,35 +53,35 @@ public class MixinBlockHopper extends Block {
 
     @Unique
     private static AxisAlignedBB makeAABB(int fromX, int fromY, int fromZ, int toX, int toY, int toZ) {
-        return AxisAlignedBB.getBoundingBox(fromX / 16F, fromY / 16F, fromZ / 16F, toX / 16F, toY / 16F, toZ / 16F);
+        return AxisAlignedBB.of(fromX / 16F, fromY / 16F, fromZ / 16F, toX / 16F, toY / 16F, toZ / 16F);
     }
 
     @Unique
     private static MovingObjectPosition rayTrace(Vec3 pos, Vec3 start, Vec3 end, AxisAlignedBB boundingBox) {
-        final Vec3 vec3d = start.addVector(-pos.xCoord, -pos.yCoord, -pos.zCoord);
-        final Vec3 vec3d1 = end.addVector(-pos.xCoord, -pos.yCoord, -pos.zCoord);
+        final Vec3 vec3d = start.add(-pos.x, -pos.y, -pos.z);
+        final Vec3 vec3d1 = end.add(-pos.x, -pos.y, -pos.z);
 
-        final MovingObjectPosition raytraceresult = boundingBox.calculateIntercept(vec3d, vec3d1);
+        final MovingObjectPosition raytraceresult = boundingBox.clip(vec3d, vec3d1);
         if (raytraceresult == null) return null;
 
-        final Vec3 res = raytraceresult.hitVec.addVector(pos.xCoord, pos.yCoord, pos.zCoord);
+        final Vec3 res = raytraceresult.offset.add(pos.x, pos.y, pos.z);
         return new MovingObjectPosition(
-                (int) res.xCoord,
-                (int) res.yCoord,
-                (int) res.zCoord,
-                raytraceresult.sideHit,
+                (int) res.x,
+                (int) res.y,
+                (int) res.z,
+                raytraceresult.face,
                 pos);
     }
 
     @Override
-    public MovingObjectPosition collisionRayTrace(World world, int x, int y, int z, Vec3 start, Vec3 end) {
-        final Vec3 pos = Vec3.createVectorHelper(x, y, z);
+    public MovingObjectPosition rayTrace(World world, int x, int y, int z, Vec3 start, Vec3 end) {
+        final Vec3 pos = Vec3.of(x, y, z);
         final EnumFacing facing = EnumFacing
-                .values()[(BlockHopper.getDirectionFromMetadata(world.getBlockMetadata(x, y, z)))];
+                .values()[(BlockHopper.getFacing(world.getBlockMetadata(x, y, z)))];
         List<AxisAlignedBB> list = bounds.get(facing);
-        if (list == null) return super.collisionRayTrace(world, x, y, z, start, end);
+        if (list == null) return super.rayTrace(world, x, y, z, start, end);
         return list.stream().map(bb -> rayTrace(pos, start, end, bb)).anyMatch(Objects::nonNull)
-                ? super.collisionRayTrace(world, x, y, z, start, end)
+                ? super.rayTrace(world, x, y, z, start, end)
                 : null;
     }
 }

@@ -21,27 +21,27 @@ import com.llamalad7.mixinextras.injector.WrapWithCondition;
 public abstract class MixinGuiContainerCreative extends GuiContainer {
 
     @Shadow
-    private static int selectedTabIndex;
+    private static int selectedTab;
 
     private MixinGuiContainerCreative(Container p_i1072_1_) {
         super(p_i1072_1_);
     }
 
     @Inject(
-            method = "drawScreen",
+            method = "render",
             at = @At(
                     value = "INVOKE",
                     target = "Lorg/lwjgl/opengl/GL11;glColor4f(FFFF)V",
                     shift = At.Shift.BEFORE,
                     remap = false))
     private void hodgepodge$drawMessageInfoInTab(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
-        if (selectedTabIndex == CreativeTabs.tabAllSearch.getTabIndex()) {
+        if (selectedTab == CreativeTabs.SEARCH.getId()) {
             final String text = EnumChatFormatting.RED + "Use NEI to browse items!";
-            final int xOffset = mc.fontRenderer.getStringWidth(text) / 2;
-            mc.fontRenderer.drawStringWithShadow(
+            final int xOffset = minecraft.textRenderer.getWidth(text) / 2;
+            minecraft.textRenderer.drawWithShadow(
                     text,
-                    this.guiLeft + this.xSize / 2 - xOffset,
-                    this.guiTop + this.ySize / 2 - mc.fontRenderer.FONT_HEIGHT,
+                    this.x + this.backgroundWidth / 2 - xOffset,
+                    this.y + this.backgroundHeight / 2 - minecraft.textRenderer.fontHeight,
                     0xFFFFFF);
         }
     }
@@ -56,10 +56,10 @@ public abstract class MixinGuiContainerCreative extends GuiContainer {
     }
 
     @Inject(
-            method = "updateCreativeSearch",
+            method = "search",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/item/Item;itemRegistry:Lnet/minecraft/util/RegistryNamespaced;",
+                    target = "Lnet/minecraft/item/Item;REGISTRY:Lnet/minecraft/util/RegistryNamespaced;",
                     shift = At.Shift.BEFORE),
             cancellable = true)
     private void hodgepodge$disableCreativeSearch(CallbackInfo ci) {
@@ -72,7 +72,7 @@ public abstract class MixinGuiContainerCreative extends GuiContainer {
                     value = "INVOKE",
                     target = "Lnet/minecraft/creativetab/CreativeTabs;displayAllReleventItems(Ljava/util/List;)V"))
     private boolean hodgepodge$removeAllItemsFromTab(CreativeTabs tab, @SuppressWarnings("rawtypes") List list) {
-        return tab != CreativeTabs.tabAllSearch;
+        return tab != CreativeTabs.SEARCH;
     }
 
 }

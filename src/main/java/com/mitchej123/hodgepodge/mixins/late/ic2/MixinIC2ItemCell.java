@@ -13,7 +13,7 @@ public class MixinIC2ItemCell extends Item {
 
     @Override
     public boolean hasContainerItem(ItemStack itemStack) {
-        return (itemStack.getItemDamage() != 0);
+        return (itemStack.getMetadata() != 0);
     }
 
     @Override

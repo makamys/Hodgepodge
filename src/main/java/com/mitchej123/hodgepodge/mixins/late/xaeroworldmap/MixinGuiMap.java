@@ -9,7 +9,7 @@ import xaero.map.gui.GuiMap;
 @Mixin(GuiMap.class)
 public class MixinGuiMap {
 
-    @ModifyConstant(method = "handleMouseInput", constant = @Constant(intValue = 120, ordinal = 0))
+    @ModifyConstant(method = "handleMouse", constant = @Constant(intValue = 120, ordinal = 0))
     private int hodgepodge$fixScrolling(int original) {
         return 1;
     }

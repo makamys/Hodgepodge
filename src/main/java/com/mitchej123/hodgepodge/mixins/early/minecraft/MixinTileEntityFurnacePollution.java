@@ -19,14 +19,14 @@ import com.mitchej123.hodgepodge.util.PollutionHelper;
 public abstract class MixinTileEntityFurnacePollution extends TileEntity {
 
     @Inject(
-            method = "updateEntity",
+            method = "tick",
             at = @At(
                     value = "FIELD",
                     target = "net/minecraft/tileentity/TileEntityFurnace.furnaceBurnTime:I",
                     opcode = Opcodes.PUTFIELD))
     void hodgepodge$addPollution(CallbackInfo ci) {
-        if (!this.worldObj.isRemote && (this.worldObj.getTotalWorldTime() % 20) == 0) PollutionHelper.addPollution(
-                this.worldObj.getChunkFromBlockCoords(this.xCoord, this.zCoord),
+        if (!this.world.isMultiplayer && (this.world.getTime() % 20) == 0) PollutionHelper.addPollution(
+                this.world.getChunk(this.x, this.z),
                 PollutionConfig.furnacePollutionAmount);
     }
 }

@@ -14,7 +14,7 @@ public class MixinWorld_CoFH_TE_Cache {
 
     @Dynamic("Remove CoFH tile entity cache")
     @Redirect(
-            method = { "func_147448_a", "setTileEntity" },
+            method = { "loadBlockEntities", "setBlockEntity" },
             at = @At(
                     value = "INVOKE",
                     target = "Lcofh/lib/util/LinkedHashList;push(Ljava/lang/Object;)Z",

@@ -26,7 +26,7 @@ public class MixinPacketBuffer {
      *         types.
      */
     @Overwrite
-    public NBTTagCompound readNBTTagCompoundFromBuffer() throws IOException {
+    public NBTTagCompound readNbtCompound() throws IOException {
         final PacketBuffer self = (PacketBuffer) (Object) this;
         short shortLength = self.readShort();
         final int realLength;
@@ -39,7 +39,7 @@ public class MixinPacketBuffer {
         }
         byte[] buffer = new byte[realLength];
         self.readBytes(buffer);
-        return CompressedStreamTools.func_152457_a(buffer, new NBTSizeTracker(FixesConfig.maxNetworkNbtSizeLimit));
+        return CompressedStreamTools.read(buffer, new NBTSizeTracker(FixesConfig.maxNetworkNbtSizeLimit));
     }
 
     /**
@@ -48,12 +48,12 @@ public class MixinPacketBuffer {
      *         types.
      */
     @Overwrite
-    public void writeNBTTagCompoundToBuffer(NBTTagCompound nbt) throws IOException {
+    public void writeNbtCompound(NBTTagCompound nbt) throws IOException {
         final PacketBuffer self = (PacketBuffer) (Object) this;
         if (nbt == null) {
             self.writeShort(-1);
         } else {
-            byte[] buffer = CompressedStreamTools.compress(nbt);
+            byte[] buffer = CompressedStreamTools.write(nbt);
             if (buffer.length >= MAGIC_LENGTH_IS_INT) {
                 self.writeShort(MAGIC_LENGTH_IS_INT);
                 self.writeInt(buffer.length);

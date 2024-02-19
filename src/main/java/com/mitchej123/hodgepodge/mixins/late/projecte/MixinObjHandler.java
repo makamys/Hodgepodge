@@ -21,9 +21,9 @@ public class MixinObjHandler {
             at = @At(
                     remap = true,
                     value = "INVOKE",
-                    target = "Lnet/minecraft/item/crafting/FurnaceRecipes;getSmeltingList()Ljava/util/Map;"),
+                    target = "Lnet/minecraft/item/crafting/FurnaceRecipes;getRecipes()Ljava/util/Map;"),
             remap = false)
     private static Map<ItemStack, ItemStack> hodgepodge$getFakeRecipeMap(FurnaceRecipes instance) {
-        return new HashMap<>(instance.getSmeltingList());
+        return new HashMap<>(instance.getRecipes());
     }
 }

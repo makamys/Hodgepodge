@@ -19,43 +19,43 @@ public class MixinTileEntityHopper {
      * @reason Full hopper voiding items from drawer
      */
     @Redirect(
-            method = "func_145891_a(Lnet/minecraft/tileentity/IHopper;)Z",
+            method = "pullItems(Lnet/minecraft/tileentity/IHopper;)Z",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/tileentity/TileEntityHopper;func_145892_a(Lnet/minecraft/tileentity/IHopper;Lnet/minecraft/inventory/IInventory;II)Z"))
+                    target = "Lnet/minecraft/tileentity/TileEntityHopper;pullItems(Lnet/minecraft/tileentity/IHopper;Lnet/minecraft/inventory/IInventory;II)Z"))
     private static boolean hodgepodge$moveFromHopperToInventory(IHopper hopper, IInventory inventory, int slot,
             int side) {
-        ItemStack is = inventory.getStackInSlot(slot);
-        if (is == null || is.stackSize == 0) return false;
+        ItemStack is = inventory.getStack(slot);
+        if (is == null || is.size == 0) return false;
         if (inventory instanceof ISidedInventory) {
             ISidedInventory sidedInventory = (ISidedInventory) inventory;
-            if (!sidedInventory.canExtractItem(slot, is, side)) return false;
+            if (!sidedInventory.canHopperRemoveStack(slot, is, side)) return false;
         }
         int spaceSlot = getSpaceSlot(hopper, is);
         if (spaceSlot == -1) return false;
-        ItemStack decreased = inventory.decrStackSize(slot, 1);
-        if (decreased == null || decreased.stackSize == 0) return false;
-        ItemStack space = hopper.getStackInSlot(spaceSlot);
+        ItemStack decreased = inventory.removeStack(slot, 1);
+        if (decreased == null || decreased.size == 0) return false;
+        ItemStack space = hopper.getStack(spaceSlot);
         if (space == null) {
             space = is.copy();
-            space.stackSize = 1;
-            hopper.setInventorySlotContents(spaceSlot, space);
+            space.size = 1;
+            hopper.setStack(spaceSlot, space);
         } else {
-            space.stackSize += 1;
+            space.size += 1;
         }
         return true;
     }
 
     @Unique
     private static int getSpaceSlot(IHopper hopper, ItemStack is) {
-        final int size = hopper.getSizeInventory();
+        final int size = hopper.getSize();
         for (int i = 0; i < size; i++) {
-            ItemStack space = hopper.getStackInSlot(i);
+            ItemStack space = hopper.getStack(i);
             if (space == null) {
                 return i;
             }
-            if (space.stackSize < Math.min(space.getMaxStackSize(), hopper.getInventoryStackLimit()))
-                if (is.isItemEqual(space) && ItemStack.areItemStackTagsEqual(is, space)) {
+            if (space.size < Math.min(space.getMaxSize(), hopper.getMaxStackSize()))
+                if (is.matchesItem(space) && ItemStack.matchesNbt(is, space)) {
                     return i;
                 }
         }

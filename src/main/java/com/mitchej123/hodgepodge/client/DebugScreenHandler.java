@@ -36,7 +36,7 @@ public class DebugScreenHandler {
 
     @SubscribeEvent
     public void onRenderGameOverlayTextEvent(RenderGameOverlayEvent.Text event) {
-        if (Minecraft.getMinecraft().gameSettings.showDebugInfo) {
+        if (Minecraft.getInstance().options.debugEnabled) {
             event.right.add(2, null); // Empty Line
             event.right.add(
                     3,

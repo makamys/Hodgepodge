@@ -20,7 +20,7 @@ public class MixinAddonResourcePack {
             method = "<init>", // AddonResourcePack(String)
             remap = false)
     private Object hodgepodge$getFileAssets(Object var0, Class<?> var1, Class<?> var2, int var3) {
-        return Minecraft.getMinecraft().fileAssets;
+        return Minecraft.getInstance().assetsDir;
     }
 
 }

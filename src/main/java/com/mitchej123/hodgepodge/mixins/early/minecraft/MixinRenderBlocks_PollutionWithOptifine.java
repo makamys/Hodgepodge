@@ -38,7 +38,7 @@ public class MixinRenderBlocks_PollutionWithOptifine {
                     remap = false))
     private int hodgepodge$pollutionBlockLiquid(int color, Block block, int blockX, int blockY, int blockZ) {
         ColorOverrideType type = Common.config.liquidBlocks.matchesID(block);
-        if (type == null || block.getMaterial() != Material.water) {
+        if (type == null || block.getMaterial() != Material.WATER) {
             return color;
         }
         return type.getColor(color, blockX, blockZ);

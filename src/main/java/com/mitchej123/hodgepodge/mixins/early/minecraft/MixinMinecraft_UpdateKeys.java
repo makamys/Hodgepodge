@@ -16,10 +16,10 @@ public class MixinMinecraft_UpdateKeys {
      * From Sk1er/Patcher
      */
     @Inject(
-            method = "setIngameFocus",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/MouseHelper;grabMouseCursor()V"))
+            method = "closeScreen",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/MouseHelper;lock()V"))
     private void hodgepodge$updateKeysStates(CallbackInfo ci) {
-        ((KeyBindingExt) Minecraft.getMinecraft().gameSettings.keyBindAttack).hodgepodge$updateKeyStates();
+        ((KeyBindingExt) Minecraft.getInstance().options.attackKey).hodgepodge$updateKeyStates();
     }
 
 }

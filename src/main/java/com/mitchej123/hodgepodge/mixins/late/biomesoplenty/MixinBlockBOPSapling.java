@@ -25,10 +25,10 @@ import biomesoplenty.common.world.features.trees.WorldGenBOPTaiga3;
 public class MixinBlockBOPSapling {
 
     @Inject(
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockToAir(III)Z"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;removeBlock(III)Z"),
             cancellable = true,
             locals = LocalCapture.CAPTURE_FAILSOFT,
-            method = "func_149878_d")
+            method = "grow")
     public void hodgepodge$growTree(World world, int x, int y, int z, Random random, CallbackInfo ci, int meta,
             Object obj, int rnd) {
 
@@ -48,10 +48,10 @@ public class MixinBlockBOPSapling {
         // I all if statements above failed, obj is not overridden and a small fir tree will be generated
 
         // We can't return because obj has been modified, so the rest of the code will be executed here:
-        world.setBlockToAir(x, y, z);
+        world.removeBlock(x, y, z);
 
-        if (!((WorldGenerator) obj).generate(world, random, x, y, z)) {
-            world.setBlock(x, y, z, BOPCBlocks.saplings, meta, 2);
+        if (!((WorldGenerator) obj).place(world, random, x, y, z)) {
+            world.setBlockWithMetadata(x, y, z, BOPCBlocks.saplings, meta, 2);
         }
 
         ci.cancel();

@@ -18,10 +18,10 @@ import com.gtnewhorizon.gtnhlib.GTNHLib;
 public class MixinMinecraft_ToggleDebugMessage {
 
     @Shadow
-    public GameSettings gameSettings;
+    public GameSettings options;
 
     @Inject(
-            method = "runTick",
+            method = "tick",
             at = @At(
                     value = "FIELD",
                     target = "Lnet/minecraft/client/settings/GameSettings;advancedItemTooltips:Z",
@@ -29,41 +29,41 @@ public class MixinMinecraft_ToggleDebugMessage {
                     shift = At.Shift.AFTER))
     public void hodgepodge$printDebugChatMsgTooltips(CallbackInfo ci) {
         GTNHLib.proxy.addDebugToChat(
-                "Advanced Item Tooltips:" + (gameSettings.advancedItemTooltips ? EnumChatFormatting.GREEN + " On"
+                "Advanced Item Tooltips:" + (options.advancedItemTooltips ? EnumChatFormatting.GREEN + " On"
                         : EnumChatFormatting.RED + " Off"));
     }
 
     @Inject(
-            method = "runTick",
+            method = "tick",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/renderer/entity/RenderManager;debugBoundingBox:Z",
+                    target = "Lnet/minecraft/client/renderer/entity/RenderManager;renderHitboxes:Z",
                     opcode = Opcodes.PUTSTATIC,
                     shift = At.Shift.AFTER))
     public void hodgepodge$printDebugChatMsgHitbox(CallbackInfo ci) {
         GTNHLib.proxy.addDebugToChat(
-                "Hitboxes:" + (RenderManager.debugBoundingBox ? EnumChatFormatting.GREEN + " On"
+                "Hitboxes:" + (RenderManager.renderHitboxes ? EnumChatFormatting.GREEN + " On"
                         : EnumChatFormatting.RED + " Off"));
     }
 
     @Inject(
-            method = "runTick",
+            method = "tick",
             at = @At(
                     value = "FIELD",
-                    target = "Lnet/minecraft/client/settings/GameSettings;pauseOnLostFocus:Z",
+                    target = "Lnet/minecraft/client/settings/GameSettings;pauseOnUnfocus:Z",
                     opcode = Opcodes.PUTFIELD,
                     shift = At.Shift.AFTER))
     public void hodgepodge$printDebugChatMsgPauseLostFocus(CallbackInfo ci) {
         GTNHLib.proxy.addDebugToChat(
-                "Pause on lost focus:" + (gameSettings.pauseOnLostFocus ? EnumChatFormatting.GREEN + " On"
+                "Pause on lost focus:" + (options.pauseOnUnfocus ? EnumChatFormatting.GREEN + " On"
                         : EnumChatFormatting.RED + " Off"));
     }
 
     @Inject(
-            method = "runTick",
+            method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/renderer/RenderGlobal;loadRenderers()V",
+                    target = "Lnet/minecraft/client/renderer/RenderGlobal;reload()V",
                     shift = At.Shift.AFTER))
     public void hodgepodge$printDebugChatMsgChunkReload(CallbackInfo ci) {
         GTNHLib.proxy.addDebugToChat("Reloading all chunks");

@@ -14,43 +14,43 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinGuiTextField {
 
     @Shadow
-    private boolean isEnabled;
+    private boolean editable;
 
     @Shadow
-    private boolean isFocused;
+    private boolean focused;
 
     @Shadow
-    public abstract void writeText(String p_146191_1_);
+    public abstract void write(String p_146191_1_);
 
     @Shadow
-    public abstract void setCursorPositionEnd();
+    public abstract void setCursorToEnd();
 
     @Shadow
-    public abstract void setSelectionPos(int p_146199_1_);
+    public abstract void setSelectionEnd(int p_146199_1_);
 
     @Shadow
     public abstract String getSelectedText();
 
-    @Inject(method = "textboxKeyTyped", at = @At(value = "HEAD"), cancellable = true)
+    @Inject(method = "keyPressed", at = @At(value = "HEAD"), cancellable = true)
     private void hodgepodge$addMacCommandKeyShortcuts(char typedChar, int eventKey,
             CallbackInfoReturnable<Boolean> cir) {
-        if (this.isFocused && GuiScreen.isCtrlKeyDown()) {
+        if (this.focused && GuiScreen.isControlDown()) {
             if (eventKey == Keyboard.KEY_V) {
-                if (this.isEnabled) {
-                    this.writeText(GuiScreen.getClipboardString());
+                if (this.editable) {
+                    this.write(GuiScreen.getClipboard());
                     cir.setReturnValue(true);
                 }
             } else if (eventKey == Keyboard.KEY_C) {
-                GuiScreen.setClipboardString(this.getSelectedText());
+                GuiScreen.setClipboard(this.getSelectedText());
                 cir.setReturnValue(true);
             } else if (eventKey == Keyboard.KEY_A) {
-                this.setCursorPositionEnd();
-                this.setSelectionPos(0);
+                this.setCursorToEnd();
+                this.setSelectionEnd(0);
                 cir.setReturnValue(true);
             } else if (eventKey == Keyboard.KEY_X) {
-                GuiScreen.setClipboardString(this.getSelectedText());
-                if (this.isEnabled) {
-                    this.writeText("");
+                GuiScreen.setClipboard(this.getSelectedText());
+                if (this.editable) {
+                    this.write("");
                 }
                 cir.setReturnValue(true);
             }

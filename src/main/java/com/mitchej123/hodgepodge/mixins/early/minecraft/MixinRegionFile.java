@@ -53,42 +53,42 @@ public abstract class MixinRegionFile {
 
     @Shadow
     @Final
-    private static byte[] emptySector;
+    private static byte[] BLOCK_BUFFER;
 
     @Shadow
-    private RandomAccessFile dataFile;
-
-    @Shadow
-    @Final
-    private int[] offsets;
+    private RandomAccessFile randomAccessFile;
 
     @Shadow
     @Final
-    private int[] chunkTimestamps;
+    private int[] chunkBlockInfo;
 
     @Shadow
-    private ArrayList<Boolean> sectorFree;
+    @Final
+    private int[] chunkSaveTimes;
 
     @Shadow
-    private int sizeDelta;
+    private ArrayList<Boolean> blockEmptyFlags;
 
     @Shadow
-    private long lastModified;
+    private int bytesWritten;
 
     @Shadow
-    protected abstract int getOffset(int x, int z);
+    private long lastModifiedTime;
 
     @Shadow
-    public abstract boolean isChunkSaved(int x, int z);
+    protected abstract int getChunkBlockInfo(int x, int z);
 
     @Shadow
-    protected abstract void setChunkTimestamp(int chunkX, int chunkZ, int newTimestamp) throws IOException;
+    public abstract boolean hasChunkData(int x, int z);
 
     @Shadow
-    protected abstract void setOffset(int chunkX, int chunkZ, int newOffset) throws IOException;
+    protected abstract void writeChunkSaveTime(int chunkX, int chunkZ, int newTimestamp) throws IOException;
 
     @Shadow
-    protected abstract void write(int sector, byte[] data, int length) throws IOException;
+    protected abstract void writeChunkBlockInfo(int chunkX, int chunkZ, int newOffset) throws IOException;
+
+    @Shadow
+    protected abstract void writeChunkData(int sector, byte[] data, int length) throws IOException;
 
     @Unique
     final private IOException hodgepodge$magicException = new IOException("cancel the constructor");
@@ -100,57 +100,57 @@ public abstract class MixinRegionFile {
      */
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/io/File;exists()Z", ordinal = 0))
     private void hodgepodge$initRedirect(File fileName, CallbackInfo ci) throws IOException {
-        this.sizeDelta = 0;
+        this.bytesWritten = 0;
         try {
             if (fileName.exists()) {
-                this.lastModified = fileName.lastModified();
+                this.lastModifiedTime = fileName.lastModified();
             }
 
-            dataFile = new RandomAccessFile(fileName, "rw");
+            randomAccessFile = new RandomAccessFile(fileName, "rw");
 
-            if (dataFile.length() < SECTOR_LLENGTH) {
-                dataFile.write(emptySector);
-                dataFile.write(emptySector);
-                this.sizeDelta += 2 * SECTOR_LENGTH;
+            if (randomAccessFile.length() < SECTOR_LLENGTH) {
+                randomAccessFile.write(BLOCK_BUFFER);
+                randomAccessFile.write(BLOCK_BUFFER);
+                this.bytesWritten += 2 * SECTOR_LENGTH;
             }
 
             // Size padding
-            if ((dataFile.length() & SECTOR_MASK) != 0L) {
-                final int oversize = (int) (dataFile.length() & SECTOR_MASK);
+            if ((randomAccessFile.length() & SECTOR_MASK) != 0L) {
+                final int oversize = (int) (randomAccessFile.length() & SECTOR_MASK);
                 final int missing = SECTOR_LENGTH - oversize;
-                dataFile.write(emptySector, 0, missing);
+                randomAccessFile.write(BLOCK_BUFFER, 0, missing);
             }
 
-            int numSectors = (int) (dataFile.length() / SECTOR_LLENGTH);
-            this.sectorFree = new ArrayList<>(numSectors);
+            int numSectors = (int) (randomAccessFile.length() / SECTOR_LLENGTH);
+            this.blockEmptyFlags = new ArrayList<>(numSectors);
 
             for (int i = 0; i < numSectors; ++i) {
-                this.sectorFree.add(true);
+                this.blockEmptyFlags.add(true);
             }
 
-            this.sectorFree.set(0, false);
-            this.sectorFree.set(1, false);
-            dataFile.seek(0L);
+            this.blockEmptyFlags.set(0, false);
+            this.blockEmptyFlags.set(1, false);
+            randomAccessFile.seek(0L);
 
             // Read the chunk offsets table
             for (int i = 0; i < 1024; ++i) {
-                final int offset = dataFile.readInt();
-                this.offsets[i] = offset;
+                final int offset = randomAccessFile.readInt();
+                this.chunkBlockInfo[i] = offset;
                 int length = offset & 0xFF;
                 // Hodgepodge: max length => read real length from the chunk data
                 if (length == 255) {
                     // if sector pointer is valid
-                    if ((offset >> 8) <= this.sectorFree.size()) {
+                    if ((offset >> 8) <= this.blockEmptyFlags.size()) {
                         // seek to the sector pointer
-                        dataFile.seek((offset >> 8) * SECTOR_LLENGTH);
-                        length = (dataFile.readInt() + 4) / SECTOR_LENGTH + 1;
-                        dataFile.seek(i * 4 + 4); // seek back to where we were
+                        randomAccessFile.seek((offset >> 8) * SECTOR_LLENGTH);
+                        length = (randomAccessFile.readInt() + 4) / SECTOR_LENGTH + 1;
+                        randomAccessFile.seek(i * 4 + 4); // seek back to where we were
                     }
                 }
                 // Hodgepodge: use recalculated length
-                if (offset != 0 && (offset >> 8) + length <= this.sectorFree.size()) {
+                if (offset != 0 && (offset >> 8) + length <= this.blockEmptyFlags.size()) {
                     for (int l = 0; l < length; ++l) {
-                        this.sectorFree.set((offset >> 8) + l, false);
+                        this.blockEmptyFlags.set((offset >> 8) + l, false);
                     }
                 } else if (length > 0) {
                     FMLLog.warning(
@@ -164,8 +164,8 @@ public abstract class MixinRegionFile {
             }
             // Read the chunk timestamps table
             for (int i = 0; i < 1024; ++i) {
-                int timestamp = dataFile.readInt();
-                this.chunkTimestamps[i] = timestamp;
+                int timestamp = randomAccessFile.readInt();
+                this.chunkSaveTimes[i] = timestamp;
             }
         } catch (IOException e) {
             e.printStackTrace(System.err);
@@ -187,7 +187,7 @@ public abstract class MixinRegionFile {
      */
     @Overwrite(remap = false) // forge method
     public synchronized boolean chunkExists(int x, int z) {
-        return this.isChunkSaved(x, z);
+        return this.hasChunkData(x, z);
     }
 
     @ModifyVariable(
@@ -196,14 +196,14 @@ public abstract class MixinRegionFile {
             slice = @Slice(
                     from = @At(
                             value = "INVOKE",
-                            target = "Lnet/minecraft/world/chunk/storage/RegionFile;getOffset(II)I"),
+                            target = "Lnet/minecraft/world/chunk/storage/RegionFile;getChunkBlockInfo(II)I"),
                     to = @At(value = "INVOKE", target = "Ljava/util/ArrayList;size()I")),
             index = 5)
     private int hodgepodge$getChunkDataInputStream$extendedSectorCount(int sectorCount, @Local(index = 4) int sector)
             throws IOException {
         if (sectorCount == 255) {
-            dataFile.seek(sector * SECTOR_LLENGTH);
-            sectorCount = (dataFile.readInt() + 4) / SECTOR_LENGTH + 1;
+            randomAccessFile.seek(sector * SECTOR_LLENGTH);
+            sectorCount = (randomAccessFile.readInt() + 4) / SECTOR_LENGTH + 1;
         }
         return sectorCount;
     }
@@ -231,15 +231,15 @@ public abstract class MixinRegionFile {
      * @reason Significant logic changes to support oversized chunk allocation
      */
     @Overwrite
-    protected synchronized void write(int x, int z, byte[] data, int length) {
+    protected synchronized void writeChunkData(int x, int z, byte[] data, int length) {
         try {
-            int offset = this.getOffset(x, z);
+            int offset = this.getChunkBlockInfo(x, z);
             int sector = offset >> 8;
             int sectorCount = offset & 255;
             // Spigot start
             if (sectorCount == 255) {
-                this.dataFile.seek(sector * SECTOR_LLENGTH);
-                sectorCount = (this.dataFile.readInt() + 4) / 4096 + 1;
+                this.randomAccessFile.seek(sector * SECTOR_LLENGTH);
+                sectorCount = (this.randomAccessFile.readInt() + 4) / 4096 + 1;
             }
             // Spigot end
             int sectorsNeeded = (length + 5) / 4096 + 1;
@@ -256,25 +256,25 @@ public abstract class MixinRegionFile {
 
             if (sector != 0 && sectorCount == sectorsNeeded) { // fits perfectly in the existing allocation
                 // crucible - info: this part just overwrite the current old sectors.
-                this.write(sector, data, length);
+                this.writeChunkData(sector, data, length);
             } else { // reallocate
                 for (int i = 0; i < sectorCount; ++i) {
-                    this.sectorFree.set(sector + i, true);
+                    this.blockEmptyFlags.set(sector + i, true);
                 }
 
-                int sectorStart = this.sectorFree.indexOf(true);
+                int sectorStart = this.blockEmptyFlags.indexOf(true);
                 int sectorLength = 0;
 
                 // crucible - info: search for an area with enough free space
                 if (sectorStart != -1) {
-                    for (int i = sectorStart; i < this.sectorFree.size(); ++i) {
+                    for (int i = sectorStart; i < this.blockEmptyFlags.size(); ++i) {
                         if (sectorLength != 0) {
-                            if (this.sectorFree.get(i)) {
+                            if (this.blockEmptyFlags.get(i)) {
                                 ++sectorLength;
                             } else {
                                 sectorLength = 0;
                             }
-                        } else if (this.sectorFree.get(i)) {
+                        } else if (this.blockEmptyFlags.get(i)) {
                             sectorStart = i;
                             sectorLength = 1;
                         }
@@ -289,30 +289,30 @@ public abstract class MixinRegionFile {
                     // crucible - info: space found.
                     sector = sectorStart;
                     // Spigot
-                    this.setOffset(x, z, sector << 8 | Math.min(sectorsNeeded, 255));
+                    this.writeChunkBlockInfo(x, z, sector << 8 | Math.min(sectorsNeeded, 255));
 
                     for (int i = 0; i < sectorsNeeded; ++i) {
-                        this.sectorFree.set(sector + i, false);
+                        this.blockEmptyFlags.set(sector + i, false);
                     }
 
-                    this.write(sector, data, length);
+                    this.writeChunkData(sector, data, length);
                 } else {
                     // crucible - info: space nof found, grow the file.
-                    this.dataFile.seek(this.dataFile.length());
-                    sector = this.sectorFree.size();
+                    this.randomAccessFile.seek(this.randomAccessFile.length());
+                    sector = this.blockEmptyFlags.size();
 
                     for (int i = 0; i < sectorsNeeded; ++i) {
-                        this.dataFile.write(emptySector);
-                        this.sectorFree.add(false);
+                        this.randomAccessFile.write(BLOCK_BUFFER);
+                        this.blockEmptyFlags.add(false);
                     }
 
-                    this.sizeDelta += 4096 * sectorsNeeded;
-                    this.write(sector, data, length);
-                    this.setOffset(x, z, sector << 8 | Math.min(sectorsNeeded, 255)); // Spigot
+                    this.bytesWritten += 4096 * sectorsNeeded;
+                    this.writeChunkData(sector, data, length);
+                    this.writeChunkBlockInfo(x, z, sector << 8 | Math.min(sectorsNeeded, 255)); // Spigot
                 }
             }
 
-            this.setChunkTimestamp(x, z, (int) (MinecraftServer.getSystemTimeMillis() / 1000L));
+            this.writeChunkSaveTime(x, z, (int) (MinecraftServer.getTimeMillis() / 1000L));
         } catch (IOException ioexception) {
             ioexception.printStackTrace(System.err);
         }

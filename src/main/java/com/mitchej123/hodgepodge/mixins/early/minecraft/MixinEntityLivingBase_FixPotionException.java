@@ -21,10 +21,10 @@ public abstract class MixinEntityLivingBase_FixPotionException extends Entity {
 
     @Shadow
     @Final
-    private HashMap<Integer, PotionEffect> activePotionsMap;
+    private HashMap<Integer, PotionEffect> statusEffects;
 
     @Shadow
-    private boolean potionsNeedUpdate;
+    private boolean effectsChanged;
 
     private MixinEntityLivingBase_FixPotionException(World p_i1594_1_) {
         super(p_i1594_1_);
@@ -37,71 +37,71 @@ public abstract class MixinEntityLivingBase_FixPotionException extends Entity {
      *         newer versions.
      */
     @Overwrite
-    protected void updatePotionEffects() {
-        Iterator<Integer> iterator = this.activePotionsMap.keySet().iterator();
+    protected void tickStatusEffects() {
+        Iterator<Integer> iterator = this.statusEffects.keySet().iterator();
 
         try {
             while (iterator.hasNext()) {
                 Integer integer = iterator.next();
-                PotionEffect potioneffect = this.activePotionsMap.get(integer);
+                PotionEffect potioneffect = this.statusEffects.get(integer);
 
-                if (!potioneffect.onUpdate(((EntityLivingBase) (Object) this))) {
-                    if (!this.worldObj.isRemote) {
+                if (!potioneffect.tick(((EntityLivingBase) (Object) this))) {
+                    if (!this.world.isMultiplayer) {
                         iterator.remove();
-                        this.onFinishedPotionEffect(potioneffect);
+                        this.onStatusEffectRemoved(potioneffect);
                     }
                 } else if (potioneffect.getDuration() % 600 == 0) {
-                    this.onChangedPotionEffect(potioneffect, false);
+                    this.onStatusEffectUpgraded(potioneffect, false);
                 }
             }
         } catch (ConcurrentModificationException ignored) {}
 
         int i;
 
-        if (this.potionsNeedUpdate) {
-            if (!this.worldObj.isRemote) {
-                if (this.activePotionsMap.isEmpty()) {
-                    this.dataWatcher.updateObject(8, (byte) 0);
-                    this.dataWatcher.updateObject(7, 0);
+        if (this.effectsChanged) {
+            if (!this.world.isMultiplayer) {
+                if (this.statusEffects.isEmpty()) {
+                    this.dataTracker.update(8, (byte) 0);
+                    this.dataTracker.update(7, 0);
                     this.setInvisible(false);
                 } else {
-                    i = PotionHelper.calcPotionLiquidColor(this.activePotionsMap.values());
-                    this.dataWatcher.updateObject(
+                    i = PotionHelper.getColor(this.statusEffects.values());
+                    this.dataTracker.update(
                             8,
-                            (byte) (PotionHelper.func_82817_b(this.activePotionsMap.values()) ? 1 : 0));
-                    this.dataWatcher.updateObject(7, i);
-                    this.setInvisible(this.isPotionActive(Potion.invisibility.id));
+                            (byte) (PotionHelper.isAllAmbient(this.statusEffects.values()) ? 1 : 0));
+                    this.dataTracker.update(7, i);
+                    this.setInvisible(this.hasStatusEffect(Potion.INVISIBILITY.id));
                 }
             }
 
-            this.potionsNeedUpdate = false;
+            this.effectsChanged = false;
         }
 
-        i = this.dataWatcher.getWatchableObjectInt(7);
-        boolean flag1 = this.dataWatcher.getWatchableObjectByte(8) > 0;
+        i = this.dataTracker.getInt(7);
+        boolean flag1 = this.dataTracker.getByte(8) > 0;
 
         if (i > 0) {
             boolean flag;
 
             if (!this.isInvisible()) {
-                flag = this.rand.nextBoolean();
+                flag = this.random.nextBoolean();
             } else {
-                flag = this.rand.nextInt(15) == 0;
+                flag = this.random.nextInt(15) == 0;
             }
 
             if (flag1) {
-                flag &= this.rand.nextInt(5) == 0;
+                flag &= this.random.nextInt(5) == 0;
             }
 
             if (flag) {
                 double d0 = (double) (i >> 16 & 255) / 255.0D;
                 double d1 = (double) (i >> 8 & 255) / 255.0D;
                 double d2 = (double) (i >> 0 & 255) / 255.0D;
-                this.worldObj.spawnParticle(
+                this.world.addParticle(
                         flag1 ? "mobSpellAmbient" : "mobSpell",
-                        this.posX + (this.rand.nextDouble() - 0.5D) * (double) this.width,
-                        this.posY + this.rand.nextDouble() * (double) this.height - (double) this.yOffset,
-                        this.posZ + (this.rand.nextDouble() - 0.5D) * (double) this.width,
+                        this.x + (this.random.nextDouble() - 0.5D) * (double) this.width,
+                        this.y + this.random.nextDouble() * (double) this.height - (double) this.eyeHeight,
+                        this.z + (this.random.nextDouble() - 0.5D) * (double) this.width,
                         d0,
                         d1,
                         d2);
@@ -110,11 +110,11 @@ public abstract class MixinEntityLivingBase_FixPotionException extends Entity {
     }
 
     @Shadow
-    protected void onFinishedPotionEffect(PotionEffect p_70688_1_) {}
+    protected void onStatusEffectRemoved(PotionEffect p_70688_1_) {}
 
     @Shadow
-    protected void onChangedPotionEffect(PotionEffect p_70695_1_, boolean p_70695_2_) {}
+    protected void onStatusEffectUpgraded(PotionEffect p_70695_1_, boolean p_70695_2_) {}
 
     @Shadow
-    public abstract boolean isPotionActive(int p_82165_1_);
+    public abstract boolean hasStatusEffect(int p_82165_1_);
 }

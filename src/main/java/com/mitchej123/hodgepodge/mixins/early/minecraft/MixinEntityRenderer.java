@@ -16,11 +16,11 @@ public class MixinEntityRenderer {
      * From Sk1erLLC/Patcher
      */
     @Redirect(
-            method = "orientCamera",
+            method = "transformCamera",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/multiplayer/WorldClient;rayTraceBlocks(Lnet/minecraft/util/Vec3;Lnet/minecraft/util/Vec3;)Lnet/minecraft/util/MovingObjectPosition;"))
     private MovingObjectPosition hodgepodge$fixPerspectiveCamera(WorldClient instance, Vec3 from, Vec3 to) {
-        return instance.func_147447_a(from, to, false, true, true);
+        return instance.rayTrace(from, to, false, true, true);
     }
 }

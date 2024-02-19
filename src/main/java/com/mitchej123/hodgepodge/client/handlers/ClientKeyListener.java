@@ -20,8 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientKeyListener {
 
-    private static String fastBlockPlacingEnabled = StatCollector.translateToLocal("key.fastBlockPlacing.enabled");
-    private static String fastBlockPlacingDisabled = StatCollector.translateToLocal("key.fastBlockPlacing.disabled");
+    private static String fastBlockPlacingEnabled = StatCollector.translate("key.fastBlockPlacing.enabled");
+    private static String fastBlockPlacingDisabled = StatCollector.translate("key.fastBlockPlacing.disabled");
 
     public static KeyBinding FastBlockPlacingKey = new KeyBinding(
             "key.fastBlockPlacing.desc",
@@ -33,8 +33,8 @@ public class ClientKeyListener {
         int key = Keyboard.getEventKey();
         boolean released = !Keyboard.getEventKeyState();
         if (released) {
-            if (Minecraft.getMinecraft().gameSettings.showDebugInfo && GuiScreen.isShiftKeyDown()
-                    && GuiScreen.isCtrlKeyDown()) {
+            if (Minecraft.getInstance().options.debugEnabled && GuiScreen.isShiftDown()
+                    && GuiScreen.isControlDown()) {
                 if (key == Keyboard.KEY_N) {
                     HodgepodgeClient.animationsMode.next();
                 } else if (key == Keyboard.KEY_D && DebugConfig.renderDebug) {
@@ -42,7 +42,7 @@ public class ClientKeyListener {
                 }
             }
         } else {
-            if (FastBlockPlacingKey.isPressed()) {
+            if (FastBlockPlacingKey.consumeClick()) {
                 TweaksConfig.fastBlockPlacing = !TweaksConfig.fastBlockPlacing;
                 AboveHotbarHUD.renderTextAboveHotbar(
                         (TweaksConfig.fastBlockPlacing ? fastBlockPlacingEnabled : fastBlockPlacingDisabled),

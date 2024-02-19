@@ -15,13 +15,13 @@ import com.mitchej123.hodgepodge.mixins.interfaces.BlockExt_FixXray;
 public class MixinWorld_FixXray {
 
     @Unique
-    private static final AxisAlignedBB hodgepodge$DUMMY_AABB = AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
+    private static final AxisAlignedBB hodgepodge$DUMMY_AABB = AxisAlignedBB.of(0, 0, 0, 0, 0, 0);
 
     @Redirect(
-            method = "func_147447_a",
+            method = "rayTrace",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/block/Block;getCollisionBoundingBoxFromPool(Lnet/minecraft/world/World;III)Lnet/minecraft/util/AxisAlignedBB;"))
+                    target = "Lnet/minecraft/block/Block;getCollisionShape(Lnet/minecraft/world/World;III)Lnet/minecraft/util/AxisAlignedBB;"))
     private AxisAlignedBB hodgepodge$fixXray(Block block, World world, int x, int y, int z) {
         if (((BlockExt_FixXray) block).hodgepodge$shouldRayTraceStopOnBlock(world, x, y, z)) {
             return hodgepodge$DUMMY_AABB;

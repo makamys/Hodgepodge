@@ -32,15 +32,15 @@ public abstract class MixinWaypointManager extends JmUI {
      * @reason Reversed clamping (was: {@code if(delta > 1) delta = -1;} and vice versa)
      */
     @Overwrite(remap = false)
-    public void handleMouseInput() {
-        super.handleMouseInput();
+    public void handleMouse() {
+        super.handleMouse();
         int delta = Mouse.getEventDWheel();
         if (delta != 0) {
             if (!hasLwjgl3) {
                 // LWJGL 2's reported scroll amounts are not uniformly scaled across operating systems
-                delta = MathHelper.clamp_int(delta, -1, 1);
+                delta = MathHelper.clamp(delta, -1, 1);
             }
-            this.itemScrollPane.scrollBy(-delta * this.rowHeight);
+            this.itemScrollPane.scroll(-delta * this.rowHeight);
         }
     }
 

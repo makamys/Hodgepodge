@@ -21,26 +21,26 @@ public abstract class MixinFurnaceRecipes {
      * list and using the .get()
      */
     @Shadow
-    private Map<ItemStack, ItemStack> smeltingList = new ItemStackMap<ItemStack>(false);
+    private Map<ItemStack, ItemStack> recipes = new ItemStackMap<ItemStack>(false);
 
     @Shadow
-    private Map<ItemStack, Float> experienceList = new ItemStackMap<Float>(false);
+    private Map<ItemStack, Float> xpResults = new ItemStackMap<Float>(false);
 
     /**
      * @author mitchej123
      * @reason Significantly faster Inspired by later versions of forge
      */
     @Overwrite
-    public void func_151394_a /* addSmeltingRecipe */(ItemStack input, ItemStack stack, float experience) {
-        if (getSmeltingResult(input) != null) {
+    public void register /* addSmeltingRecipe */(ItemStack input, ItemStack stack, float experience) {
+        if (getResult(input) != null) {
             Common.log.debug(
                     "Overwriting smelting recipe for input: {} and output {} with {}",
                     input,
-                    getSmeltingResult(input),
+                    getResult(input),
                     stack);
         }
-        this.smeltingList.put(input, stack);
-        this.experienceList.put(stack, experience);
+        this.recipes.put(input, stack);
+        this.xpResults.put(stack, experience);
     }
 
     /**
@@ -48,8 +48,8 @@ public abstract class MixinFurnaceRecipes {
      * @reason Significantly faster
      */
     @Overwrite
-    public ItemStack getSmeltingResult(ItemStack stack) {
-        return (ItemStack) this.smeltingList.get(stack);
+    public ItemStack getResult(ItemStack stack) {
+        return (ItemStack) this.recipes.get(stack);
     }
 
     /**
@@ -57,11 +57,11 @@ public abstract class MixinFurnaceRecipes {
      * @reason Significantly faster
      */
     @Overwrite
-    public float func_151398_b /* getSmeltingExperience */(ItemStack stack) {
+    public float getXp /* getSmeltingExperience */(ItemStack stack) {
         if (stack == null || stack.getItem() == null) return 0f;
         float exp = stack.getItem().getSmeltingExperience(stack);
         if (exp == -1) {
-            exp = (float) (this.experienceList.getOrDefault(stack, 0f));
+            exp = (float) (this.xpResults.getOrDefault(stack, 0f));
         }
         return exp;
     }

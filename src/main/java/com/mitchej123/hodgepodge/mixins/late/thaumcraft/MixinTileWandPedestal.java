@@ -39,7 +39,7 @@ public class MixinTileWandPedestal extends TileThaumcraft {
         AspectList as = wand.getAspectsWithRoom(wandstack);
         if (as != null && as.size() > 0) {
             for (Aspect aspect : as.getAspects()) {
-                int drained = VisNetHandler.drainVis(this.worldObj, this.xCoord, this.yCoord, this.zCoord, aspect, 25); // Pedestal
+                int drained = VisNetHandler.drainVis(this.world, this.x, this.y, this.z, aspect, 25); // Pedestal
                                                                                                                         // operates
                                                                                                                         // every
                                                                                                                         // 5
@@ -55,7 +55,7 @@ public class MixinTileWandPedestal extends TileThaumcraft {
     @Inject(
             at = @At(
                     args = "classValue=thaumcraft/api/nodes/INode",
-                    target = "Lnet/minecraft/world/World;getTileEntity(III)Lnet/minecraft/tileentity/TileEntity;",
+                    target = "Lnet/minecraft/world/World;getBlockEntity(III)Lnet/minecraft/tileentity/TileEntity;",
                     value = "CONSTANT"),
             locals = LocalCapture.CAPTURE_FAILEXCEPTION,
             method = "Lthaumcraft/common/tiles/TileWandPedestal;findNodes()V",
@@ -63,7 +63,7 @@ public class MixinTileWandPedestal extends TileThaumcraft {
             require = 1)
     private void hodgepodge$addCVNodes(CallbackInfo ci, int xx, int yy, int zz, TileEntity te) {
         if (te instanceof TileVisNode) {
-            this.nodes.add(new ChunkCoordinates(te.xCoord, te.yCoord, te.zCoord));
+            this.nodes.add(new ChunkCoordinates(te.x, te.y, te.z));
         }
     }
 }

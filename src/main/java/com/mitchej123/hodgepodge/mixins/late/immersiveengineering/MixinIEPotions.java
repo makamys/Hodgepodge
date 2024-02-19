@@ -14,7 +14,7 @@ public class MixinIEPotions {
 
     @Inject(method = "extendPotionArray", at = @At("HEAD"), cancellable = true)
     private static void hodgepodge$addConditionToExtendPotionArray(int extendBy, CallbackInfo ci) {
-        if (Potion.potionTypes.length > 255) {
+        if (Potion.BY_ID.length > 255) {
             ci.cancel();
         }
     }

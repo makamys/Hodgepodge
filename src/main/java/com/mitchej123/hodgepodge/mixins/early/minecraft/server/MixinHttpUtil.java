@@ -19,7 +19,7 @@ public class MixinHttpUtil {
      * @reason Allow LAN servers to have static port number
      */
     @Overwrite
-    public static int func_76181_a() throws IOException {
+    public static int getLocalPort() throws IOException {
         ServerSocket serversocket = null;
         int port = 0;
 

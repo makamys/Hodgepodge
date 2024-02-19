@@ -12,5 +12,5 @@ import org.spongepowered.asm.mixin.Shadow;
 public class MixinBlockRedstoneTorch {
 
     @Shadow
-    private static Map field_150112_b = new WeakHashMap<>();
+    private static Map RECENT_TOGGLES = new WeakHashMap<>();
 }

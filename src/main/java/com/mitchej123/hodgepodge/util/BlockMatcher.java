@@ -28,7 +28,7 @@ public class BlockMatcher {
     }
 
     public ColorOverrideType matchesID(Block block) {
-        return blockIDs.get(Block.blockRegistry.getIDForObject(block));
+        return blockIDs.get(Block.REGISTRY.getId(block));
     }
 
     public void updateClassList(String[] cfg) {
@@ -72,7 +72,7 @@ public class BlockMatcher {
         FMLControlledNamespacedRegistry<Block> blockRegistry = GameData.getBlockRegistry();
         for (Block block : blockRegistry.typeSafeIterable()) {
             ColorOverrideType t = matchesClass(block);
-            if (t != null) blockIDs.put(Block.blockRegistry.getIDForObject(block), t);
+            if (t != null) blockIDs.put(Block.REGISTRY.getId(block), t);
         }
     }
 
